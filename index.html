@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Uzrel Messenger - Cloud Firebase Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Firebase SDK skriptlari -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-thumb { background: rgba(138, 150, 160, 0.2); border-radius: 10px; }
+
+        [data-theme="dark"] {
+            --bg-main: #0e1621; --bg-sidebar: #17212b; --bg-chat: #0e1621;
+            --panel-glass: rgba(23, 33, 43, 0.95); --border-color: rgba(255, 255, 255, 0.06);
+            --text-main: #f0f4f8; --text-muted: #7d8b99; --accent: #4ea4f4;
+            --message-me: #2b5278; --message-other: #182533; --pattern: rgba(255, 255, 255, 0.035);
+        }
+        [data-theme="light"] {
+            --bg-main: #f1f5f9; --bg-sidebar: #ffffff; --bg-chat: #e9edf1;
+            --panel-glass: rgba(255, 255, 255, 0.95); --border-color: rgba(0, 0, 0, 0.06);
+            --text-main: #0f172a; --text-muted: #64748b; --accent: #2563eb;
+            --message-me: #2563eb; --message-other: #ffffff; --pattern: rgba(0, 0, 0, 0.035);
+        }
+        [data-theme="cyberpunk"] {
+            --bg-main: #05050a; --bg-sidebar: #0f0c1b; --bg-chat: #030307;
+            --panel-glass: rgba(15, 12, 27, 0.95); --border-color: rgba(168, 85, 247, 0.2);
+            --text-main: #f3e8ff; --text-muted: #a855f7; --accent: #ec4899;
+            --message-me: #8b3d8f; --message-other: #18122c; --pattern: rgba(236, 72, 153, 0.05);
+        }
+        [data-theme="emerald"] {
+            --bg-main: #022c22; --bg-sidebar: #064e3b; --bg-chat: #022c22;
+            --panel-glass: rgba(6, 78, 59, 0.9); --border-color: rgba(52, 211, 153, 0.2);
+            --text-main: #ecfdf5; --text-muted: #6ee7b7; --accent: #10b981;
+            --message-me: #047857; --message-other: #064e3b; --pattern: rgba(16, 185, 129, 0.05);
+        }
+
+        body { background-color: var(--bg-main); color: var(--text-main); }
+        .uzrel-sidebar { background-color: var(--bg-sidebar); border-right: 1px solid var(--border-color); }
+        .uzrel-chat-bg {
+            background-color: var(--bg-chat);
+            background-image: radial-gradient(var(--pattern) 1.3px, transparent 1.3px);
+            background-size: 24px 24px;
+        }
+        .uzrel-panel { background-color: var(--panel-glass); backdrop-filter: blur(20px); }
+
+        @media (max-width: 768px) {
+            .mobile-hidden { display: none !important; }
+            .mobile-full { width: 100% !important; flex: 1 !important; }
+            .mobile-show { display: flex !important; }
+        }
+    </style>
+</head>
+<body class="w-screen h-screen overflow-hidden flex" data-theme="dark">
+
+    <!-- AUTH SCREEN -->
+    <div id="authScreen" class="absolute inset-0 z-50 flex items-center justify-center p-4 bg-black/95 backdrop-blur-2xl">
+        <div class="uzrel-panel p-6 sm:p-8 rounded-[2rem] max-w-sm sm:max-w-md w-full border border-white/10 shadow-2xl space-y-5">
+            <div class="text-center space-y-2">
+                <div class="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-tr from-blue-600 via-indigo-600 to-pink-500 rounded-2xl mx-auto flex items-center justify-center text-white text-2xl sm:text-3xl shadow-lg">
+                    <i class="fa-solid fa-cube"></i>
+                </div>
+                <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight bg-gradient-to-r from-blue-400 to-pink-400 bg-clip-text text-transparent">Uzrel Cloud</h2>
+                <p class="text-xs text-[var(--text-muted)]">Real vaqt rejimidagi Firebase bulut tarmog'i</p>
+            </div>
+
+            <div class="flex bg-black/40 p-1 rounded-xl border border-white/10">
+                <button id="tabLoginBtn" onclick="switchAuthMode('login')" class="flex-1 py-2 text-xs font-bold rounded-lg bg-blue-600 text-white transition">Kirish</button>
+                <button id="tabRegisterBtn" onclick="switchAuthMode('register')" class="flex-1 py-2 text-xs font-bold rounded-lg text-[var(--text-muted)] transition">Ro'yxatdan o'tish</button>
+            </div>
+
+            <div class="space-y-3.5">
+                <div id="errorMsg" class="text-rose-400 text-xs text-center hidden font-semibold bg-rose-500/10 p-2.5 rounded-xl border border-rose-500/20"></div>
+                <div>
+                    <label class="text-[10px] text-[var(--text-muted)] font-bold mb-1 block uppercase">Foydalanuvchi Ismi (Username)</label>
+                    <input type="text" id="usernameInput" placeholder="Masalan: kamron" class="w-full bg-black/40 border border-white/10 focus:border-blue-500 rounded-xl px-4 py-3 text-xs text-white focus:outline-none">
+                </div>
+                <div id="birthdateContainer" class="hidden">
+                    <label class="text-[10px] text-[var(--text-muted)] font-bold mb-1 block uppercase">Tug'ilgan Kuningiz</label>
+                    <input type="date" id="birthdateInput" class="w-full bg-black/40 border border-white/10 focus:border-blue-500 rounded-xl px-4 py-3 text-xs text-white focus:outline-none">
+                </div>
+                <div>
+                    <label class="text-[10px] text-[var(--text-muted)] font-bold mb-1 block uppercase">Parol</label>
+                    <input type="password" id="passwordInput" placeholder="******" class="w-full bg-black/40 border border-white/10 focus:border-blue-500 rounded-xl px-4 py-3 text-xs text-white focus:outline-none">
+                </div>
+                <button id="authActionBtn" onclick="handleAuth()" class="w-full py-3.5 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-blue-500/30 uppercase tracking-wider transition">Akkauntga kirish</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN APP SCREEN -->
+    <div id="appScreen" class="w-full h-full flex relative overflow-hidden hidden">
+        <div id="sidebarPanel" class="w-full sm:w-[360px] uzrel-sidebar flex flex-col h-full z-10">
+            <div class="p-3 border-b border-[var(--border-color)] space-y-2.5">
+                <div class="flex items-center gap-2">
+                    <button onclick="openSettingsModal()" class="w-9 h-9 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-[var(--text-muted)] hover:text-white" title="Sozlamalar"><i class="fa-solid fa-bars text-xs"></i></button>
+                    <div class="relative flex-1">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] text-xs"></i>
+                        <input type="text" id="searchInput" oninput="filterChats()" placeholder="Qidirish..." class="w-full bg-black/20 border border-[var(--border-color)] focus:border-blue-500 rounded-full pl-8 pr-3 py-2 text-xs placeholder-[var(--text-muted)] focus:outline-none">
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <button onclick="openCreateModal('channel')" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-[var(--text-muted)] hover:text-white" title="Kanal"><i class="fa-solid fa-bullhorn text-[11px]"></i></button>
+                        <button onclick="openCreateModal('group')" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-[var(--text-muted)] hover:text-white" title="Guruh"><i class="fa-solid fa-users text-[11px]"></i></button>
+                        <button onclick="openAddFriendModal()" class="w-8 h-8 rounded-full bg-blue-600/20 text-blue-400 flex items-center justify-center" title="Do'st qo'shish"><i class="fa-solid fa-user-plus text-[11px]"></i></button>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4 text-[11px] overflow-x-auto pb-1" id="folderTabs">
+                    <button onclick="switchFolder('all', event)" class="pb-1 border-b-2 border-[var(--accent)] text-[var(--accent)] font-extrabold flex-shrink-0">Barchasi</button>
+                    <button onclick="switchFolder('friends', event)" class="pb-1 border-b-2 border-transparent text-[var(--text-muted)] font-bold flex-shrink-0">Do'stlar</button>
+                    <button onclick="switchFolder('channels', event)" class="pb-1 border-b-2 border-transparent text-[var(--text-muted)] font-bold flex-shrink-0">Kanallar</button>
+                    <button onclick="switchFolder('groups', event)" class="pb-1 border-b-2 border-transparent text-[var(--text-muted)] font-bold flex-shrink-0">Guruhlar</button>
+                    <button onclick="switchFolder('bots', event)" class="pb-1 border-b-2 border-transparent text-[var(--text-muted)] font-bold flex-shrink-0">Botlar</button>
+                </div>
+            </div>
+            <div class="flex-1 overflow-y-auto divide-y divide-[var(--border-color)]" id="chatList"></div>
+        </div>
+
+        <div id="chatPanel" class="w-full sm:flex-1 flex flex-col h-full uzrel-chat-bg relative mobile-hidden">
+            <div class="uzrel-panel px-4 py-2.5 border-b border-[var(--border-color)] flex items-center justify-between z-10">
+                <div class="flex items-center gap-2.5 cursor-pointer" onclick="openChatInfoModal()">
+                    <button onclick="backToSidebar(); event.stopPropagation();" class="sm:hidden w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-white"><i class="fa-solid fa-arrow-left text-xs"></i></button>
+                    <div id="activeAvatar" class="w-9 h-9 rounded-full bg-blue-600 flex items-center justify-center font-bold text-white text-xs overflow-hidden">K</div>
+                    <div>
+                        <h4 id="activeTitle" class="font-bold text-xs">Chat tanlanmagan</h4>
+                        <span class="text-[10px] text-[var(--text-muted)]" id="activeSubTitle">tarmoqqa ulangan</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-1" id="headerActions">
+                    <button onclick="openChatInfoModal()" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-[var(--text-muted)] hover:text-white" title="Sozlamalar"><i class="fa-solid fa-ellipsis-vertical text-xs"></i></button>
+                </div>
+            </div>
+
+            <div id="messageContainer" class="flex-1 p-4 overflow-y-auto space-y-2"></div>
+
+            <!-- STICKER PICKER -->
+            <div id="stickerPicker" class="absolute bottom-16 left-4 uzrel-panel p-3 rounded-2xl border border-[var(--border-color)] shadow-2xl hidden grid grid-cols-4 gap-2 z-30 w-64 max-h-48 overflow-y-auto">
+                <div onclick="sendSticker('🔥')" class="text-2xl cursor-pointer hover:scale-125 transition text-center p-2 bg-white/5 rounded-xl">🔥</div>
+                <div onclick="sendSticker('😎')" class="text-2xl cursor-pointer hover:scale-125 transition text-center p-2 bg-white/5 rounded-xl">😎</div>
+                <div onclick="sendSticker('🚀')" class="text-2xl cursor-pointer hover:scale-125 transition text-center p-2 bg-white/5 rounded-xl">🚀</div>
+                <div onclick="sendSticker('👍')" class="text-2xl cursor-pointer hover:scale-125 transition text-center p-2 bg-white/5 rounded-xl">👍</div>
+                <div onclick="sendSticker('🎉')" class="text-2xl cursor-pointer hover:scale-125 transition text-center p-2 bg-white/5 rounded-xl">🎉</div>
+                <div onclick="sendSticker('❤️')" class="text-2xl cursor-pointer hover:scale-125 transition text-center p-2 bg-white/5 rounded-xl">❤️</div>
+            </div>
+
+            <!-- CHAT INPUT -->
+            <div class="uzrel-panel p-2.5 sm:p-3 border-t border-[var(--border-color)] flex items-center gap-2 z-10" id="chatInputArea">
+                <input type="file" id="fileInput" class="hidden" onchange="handleFileUpload(event)">
+                <button onclick="document.getElementById('fileInput').click()" class="w-9 h-9 rounded-full bg-white/5 hover:bg-white/10 text-[var(--text-muted)] hover:text-white flex items-center justify-center flex-shrink-0" title="Fayl">
+                    <i class="fa-solid fa-paperclip text-xs"></i>
+                </button>
+                <button onclick="toggleStickerPicker()" class="w-9 h-9 rounded-full bg-white/5 hover:bg-white/10 text-[var(--text-muted)] hover:text-white flex items-center justify-center flex-shrink-0" title="Stiker">
+                    <i class="fa-regular fa-face-smile text-xs"></i>
+                </button>
+                <div class="flex-1 relative">
+                    <input type="text" id="msgInput" placeholder="Xabar yozing..." class="w-full bg-black/20 border border-[var(--border-color)] focus:border-blue-500 rounded-full pl-4 pr-4 py-2.5 text-xs focus:outline-none" onkeypress="if(event.key==='Enter') sendMsg()">
+                </div>
+                <button onclick="sendMsg()" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-blue-600 hover:bg-blue-500 text-white flex items-center justify-center shadow-md flex-shrink-0">
+                    <i class="fa-solid fa-paper-plane text-xs"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODALS -->
+    <div id="settingsModal" class="absolute inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4">
+        <div class="uzrel-panel p-6 rounded-3xl max-w-sm w-full border border-white/10 space-y-4">
+            <div class="flex justify-between items-center border-b border-[var(--border-color)] pb-2.5">
+                <h3 class="font-extrabold text-xs">Sozlamalar</h3>
+                <button onclick="closeSettingsModal()" class="w-7 h-7 rounded-full bg-white/5 flex items-center justify-center text-[var(--text-muted)]"><i class="fa-solid fa-xmark text-xs"></i></button>
+            </div>
+            <div class="space-y-3 text-xs">
+                <div class="p-3 bg-black/20 rounded-xl border border-[var(--border-color)] space-y-2">
+                    <p class="text-[var(--text-muted)]">Username: <b id="settingsUsernameText" class="text-blue-400"></b></p>
+                    <label class="font-bold text-[10px] text-[var(--text-muted)] uppercase block mt-1">Avatar (Emoji yoki Rasm Linki)</label>
+                    <input type="text" id="profileAvatarInput" placeholder="🦁" class="w-full bg-black/30 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none">
+                    <button onclick="saveProfileChanges()" class="w-full py-2 bg-blue-600 text-white font-bold rounded-xl mt-2">Saqlash</button>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="setTheme('dark')" class="p-2.5 bg-[#131b26] text-white rounded-xl font-bold">Tungi</button>
+                    <button onclick="setTheme('light')" class="p-2.5 bg-white text-slate-900 rounded-xl font-bold">Kunduzgi</button>
+                </div>
+                <button onclick="logout()" class="w-full py-3 bg-rose-500/20 text-rose-400 font-bold rounded-xl border border-rose-500/30">Chiqish</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="chatInfoModal" class="absolute inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4">
+        <div class="uzrel-panel p-6 rounded-3xl max-w-sm w-full border border-white/10 space-y-4">
+            <div class="flex justify-between items-center border-b border-[var(--border-color)] pb-2.5">
+                <h3 id="chatInfoTitle" class="font-extrabold text-xs">Chat Sozlamalari</h3>
+                <button onclick="closeChatInfoModal()" class="w-7 h-7 rounded-full bg-white/5 flex items-center justify-center text-[var(--text-muted)]"><i class="fa-solid fa-xmark text-xs"></i></button>
+            </div>
+            <div class="space-y-3 text-xs" id="chatInfoContent"></div>
+        </div>
+    </div>
+
+    <div id="addFriendModal" class="absolute inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4">
+        <div class="uzrel-panel p-6 rounded-3xl max-w-sm w-full border border-white/10 space-y-3">
+            <h3 class="font-extrabold text-xs">Do'st yoki Bot Qo'shish</h3>
+            <input type="text" id="friendUsernameInput" placeholder="Username (masalan: sardor)" class="w-full bg-black/30 border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none">
+            <input type="text" id="friendFirstMsgInput" placeholder="Salom..." class="w-full bg-black/30 border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none">
+            <div class="flex gap-2 pt-1">
+                <button onclick="confirmAddFriend()" class="flex-1 py-2.5 bg-blue-600 text-white font-bold text-xs rounded-xl">Qo'shish</button>
+                <button onclick="closeAddFriendModal()" class="py-2.5 px-4 bg-white/10 text-gray-300 font-bold text-xs rounded-xl">Yopish</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="createModal" class="absolute inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4">
+        <div class="uzrel-panel p-6 rounded-3xl max-w-sm w-full border border-white/10 space-y-3">
+            <h3 id="createModalTitle" class="font-extrabold text-xs uppercase">Yaratish</h3>
+            <input type="text" id="createNameInput" placeholder="Nomi..." class="w-full bg-black/30 border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none">
+            <input type="text" id="createIconInput" placeholder="Ikonka (Emoji)" class="w-full bg-black/30 border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none">
+            <div class="flex gap-2 pt-1">
+                <button onclick="confirmCreate()" class="flex-1 py-2.5 bg-blue-600 text-white font-bold text-xs rounded-xl">Yaratish</button>
+                <button onclick="closeCreateModal()" class="py-2.5 px-4 bg-white/10 text-gray-300 font-bold text-xs rounded-xl">Yopish</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // FIREBASE SOZLAMALARI (uzrel-ceeed bazasiga ulangan)
+        const firebaseConfig = {
+            apiKey: "AIzaSyDummyKeyForCompatModeToWork", // Agar faqat Database ishlatilsa bu qatordan o'tadi
+            authDomain: "uzrel-ceeed.firebaseapp.com",
+            databaseURL: "https://uzrel-ceeed-default-rtdb.firebaseio.com",
+            projectId: "uzrel-ceeed",
+            storageBucket: "uzrel-ceeed.appspot.com",
+            messagingSenderId: "000000000000",
+            appId: "1:000000000000:web:0000000000000000"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        let currentUser = localStorage.getItem('uzrel_current_user') || null;
+        let currentTheme = localStorage.getItem('uzrel_theme') || 'dark';
+        let authMode = 'login';
+        let activeChatId = null;
+        let currentFolder = 'all';
+        let createModalType = null;
+        let activeUserData = null;
+        let allCloudUsers = {};
+        let allCloudBots = {};
+        let globalRooms = {};
+
+        window.onload = () => {
+            setTheme(currentTheme);
+            if (currentUser) {
+                initFirebaseListeners();
+            }
+        };
+
+        function initFirebaseListeners() {
+            db.ref('users').on('value', (snapshot) => {
+                allCloudUsers = snapshot.val() || {};
+                if (!allCloudUsers[currentUser]) {
+                    currentUser = null;
+                    localStorage.removeItem('uzrel_current_user');
+                    location.reload();
+                    return;
+                }
+                activeUserData = allCloudUsers[currentUser];
+                document.getElementById('authScreen').style.display = 'none';
+                document.getElementById('appScreen').classList.remove('hidden');
+                renderChatList();
+                if (activeChatId) renderMessages();
+            });
+
+            db.ref('globalBots').on('value', (snapshot) => {
+                allCloudBots = snapshot.val() || {};
+                renderChatList();
+            });
+
+            db.ref('globalChats').on('value', (snapshot) => {
+                globalRooms = snapshot.val() || {};
+                renderChatList();
+                if (activeChatId) renderMessages();
+            });
+        }
+
+        function setTheme(theme) {
+            currentTheme = theme;
+            localStorage.setItem('uzrel_theme', theme);
+            document.body.setAttribute('data-theme', theme);
+        }
+
+        function switchAuthMode(mode) {
+            authMode = mode;
+            let err = document.getElementById('errorMsg');
+            err.classList.add('hidden');
+            let loginBtn = document.getElementById('tabLoginBtn');
+            let regBtn = document.getElementById('tabRegisterBtn');
+            let birthdateContainer = document.getElementById('birthdateContainer');
+            let actionBtn = document.getElementById('authActionBtn');
+
+            if (mode === 'login') {
+                loginBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-blue-600 text-white transition";
+                regBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg text-[var(--text-muted)] transition";
+                birthdateContainer.classList.add('hidden');
+                actionBtn.innerText = "Akkauntga kirish";
+            } else {
+                regBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-blue-600 text-white transition";
+                loginBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg text-[var(--text-muted)] transition";
+                birthdateContainer.classList.remove('hidden');
+                actionBtn.innerText = "Ro'yxatdan o'tish";
+            }
+        }
+
+        function handleAuth() {
+            let name = document.getElementById('usernameInput').value.trim().toLowerCase();
+            let pass = document.getElementById('passwordInput').value;
+            let birthdate = document.getElementById('birthdateInput').value;
+            let err = document.getElementById('errorMsg');
+
+            if (!name || !pass) {
+                err.innerText = "Username va parolni kiriting!";
+                err.classList.remove('hidden');
+                return;
+            }
+
+            db.ref('users/' + name).once('value', (snapshot) => {
+                let user = snapshot.val();
+                if (authMode === 'login') {
+                    if (!user) {
+                        err.innerText = "Akkaunt topilmadi!";
+                        err.classList.remove('hidden');
+                        return;
+                    }
+                    if (user.password !== pass) {
+                        err.innerText = "Parol noto'g'ri!";
+                        err.classList.remove('hidden');
+                        return;
+                    }
+                } else {
+                    if (!birthdate) {
+                        err.innerText = "Tug'ilgan kuningizni kiriting!";
+                        err.classList.remove('hidden');
+                        return;
+                    }
+                    if (user) {
+                        err.innerText = "Bu username band!";
+                        err.classList.remove('hidden');
+                        return;
+                    }
+                    let initData = {
+                        password: pass,
+                        birthdate: birthdate,
+                        bio: "Uzrel foydalanuvchisi",
+                        avatar: name[0].toUpperCase(),
+                        chats: {
+                            'saved_messages': { id: 'saved_messages', name: 'Saqlangan xabarlar', type: 'saved', icon: '🔖', messages: { m1: { sender: 'other', text: 'Xush kelibsiz!', time: '12:00', type: 'text' } } },
+                            'bot_father': { id: 'bot_father', name: 'Uzrel BotFather', type: 'bots', icon: '🤖', messages: { m2: { sender: 'other', text: 'Bot yaratish uchun /newbot yuboring.', time: '12:00', type: 'text' } } }
+                        }
+                    };
+                    db.ref('users/' + name).set(initData);
+                }
+
+                currentUser = name;
+                localStorage.setItem('uzrel_current_user', name);
+                initFirebaseListeners();
+            });
+        }
+
+        function getActiveUserChats() {
+            if (!activeUserData || !activeUserData.chats) return {};
+            return activeUserData.chats;
+        }
+
+        function renderChatList() {
+            let list = document.getElementById('chatList');
+            if (!list || !activeUserData) return;
+            let chatsObj = getActiveUserChats();
+            let chatsArr = Object.values(chatsObj);
+            list.innerHTML = '';
+            
+            let searchQuery = document.getElementById('searchInput') ? document.getElementById('searchInput').value.toLowerCase().trim() : '';
+
+            let filtered = chatsArr.filter(c => {
+                if (searchQuery && !c.name.toLowerCase().includes(searchQuery)) return false;
+                if (currentFolder === 'friends' && c.type !== 'friend') return false;
+                if (currentFolder === 'channels' && c.type !== 'channel') return false;
+                if (currentFolder === 'groups' && c.type !== 'group') return false;
+                if (currentFolder === 'bots' && c.type !== 'bots') return false;
+                return true;
+            });
+
+            filtered.forEach(chat => {
+                let msgs = chat.messages ? Object.values(chat.messages) : [];
+                let lastMsgObj = msgs.length > 0 ? msgs[msgs.length - 1] : null;
+                let lastMsg = lastMsgObj ? (lastMsgObj.type === 'image' ? '[Rasm]' : lastMsgObj.text) : "Xabarlar yo'q";
+                let activeClass = activeChatId === chat.id ? 'bg-blue-600/10 border-l-4 border-blue-500' : 'hover:bg-white/5';
+                
+                list.innerHTML += `
+                    <div onclick="selectChat('${chat.id}')" class="p-3 cursor-pointer ${activeClass} flex items-center gap-3 transition">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center font-bold text-white text-xs flex-shrink-0">${chat.icon || chat.name[0].toUpperCase()}</div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex justify-between items-center"><h5 class="font-bold text-xs truncate">${chat.name}</h5></div>
+                            <p class="text-[11px] text-[var(--text-muted)] truncate">${lastMsg}</p>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function selectChat(id) {
+            activeChatId = id;
+            let chatsObj = getActiveUserChats();
+            let chat = chatsObj[id];
+            if (!chat) return;
+
+            document.getElementById('activeTitle').innerText = chat.name;
+            document.getElementById('activeSubTitle').innerText = chat.type === 'friend' ? 'Onlayn do\'st' : (chat.type === 'bots' ? 'Maxsus Bot' : chat.type);
+            document.getElementById('activeAvatar').innerText = chat.icon || chat.name[0].toUpperCase();
+
+            if (window.innerWidth <= 768) {
+                document.getElementById('sidebarPanel').classList.add('mobile-hidden');
+                document.getElementById('chatPanel').classList.remove('mobile-hidden');
+                document.getElementById('chatPanel').classList.add('mobile-show');
+            }
+
+            renderMessages();
+            renderChatList();
+        }
+
+        function backToSidebar() {
+            document.getElementById('sidebarPanel').classList.remove('mobile-hidden');
+            document.getElementById('chatPanel').classList.remove('mobile-show');
+            document.getElementById('chatPanel').classList.add('mobile-hidden');
+        }
+
+        function toggleStickerPicker() {
+            document.getElementById('stickerPicker').classList.toggle('hidden');
+        }
+
+        function sendSticker(emoji) {
+            toggleStickerPicker();
+            dispatchMessage({ type: 'sticker', content: emoji });
+        }
+
+        function sendMsg() {
+            let input = document.getElementById('msgInput');
+            let text = input.value.trim();
+            if (!text || !activeChatId) return;
+            dispatchMessage({ type: 'text', content: text });
+            input.value = '';
+        }
+
+        function handleFileUpload(event) {
+            let file = event.target.files[0];
+            if (!file || !activeChatId) return;
+            let reader = new FileReader();
+            reader.onload = function(e) {
+                dispatchMessage({ type: 'image', content: e.target.result, fileName: file.name });
+            };
+            reader.readAsDataURL(file);
+            event.target.value = '';
+        }
+
+        function dispatchMessage(msgData) {
+            let chatsObj = getActiveUserChats();
+            let chat = chatsObj[activeChatId];
+            if (!chat) return;
+            let time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            let newMsg = {
+                sender: currentUser,
+                type: msgData.type,
+                text: msgData.content,
+                fileName: msgData.fileName || '',
+                time: time
+            };
+
+            if (chat.type === 'friend') {
+                let roomKey = [currentUser, chat.targetUser].sort().join('_');
+                db.ref('globalChats/' + roomKey).push(newMsg);
+            } else {
+                db.ref(`users/${currentUser}/chats/${activeChatId}/messages`).push(newMsg);
+                
+                if (chat.id === 'bot_father') {
+                    if (msgData.text === '/newbot') {
+                        db.ref(`users/${currentUser}/chats/${activeChatId}/messages`).push({ sender: 'other', text: 'Yangi bot uchun username kiriting:', time: time, type: 'text' });
+                    }
+                }
+            }
+        }
+
+        function renderMessages() {
+            let container = document.getElementById('messageContainer');
+            if (!container) return;
+            container.innerHTML = '';
+            let chatsObj = getActiveUserChats();
+            let chat = chatsObj[activeChatId];
+            if (!chat) return;
+
+            let messagesList = [];
+            if (chat.type === 'friend') {
+                let roomKey = [currentUser, chat.targetUser].sort().join('_');
+                if (globalRooms[roomKey]) {
+                    messagesList = Object.values(globalRooms[roomKey]);
+                }
+            } else if (chat.messages) {
+                messagesList = Object.values(chat.messages);
+            }
+
+            messagesList.forEach(m => {
+                let isMe = m.sender === currentUser || m.sender === 'me';
+                let align = isMe ? 'justify-end' : 'justify-start';
+                let bg = isMe ? 'bg-[var(--message-me)] text-white' : 'bg-[var(--message-other)] text-[var(--text-main)] border border-[var(--border-color)]';
+                
+                let contentHTML = m.type === 'image' ? `<img src="${m.text}" class="max-w-xs rounded-xl max-h-60 object-cover">` : m.text;
+
+                container.innerHTML += `
+                    <div class="flex ${align}">
+                        <div class="max-w-[75%] sm:max-w-[65%] ${bg} px-3.5 py-2 rounded-2xl text-xs break-words shadow-sm">
+                            ${contentHTML}
+                            <div class="text-[9px] opacity-70 text-right mt-0.5">${m.time}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function switchFolder(folder, e) {
+            currentFolder = folder;
+            document.querySelectorAll('#folderTabs button').forEach(b => {
+                b.className = "pb-1 border-b-2 border-transparent text-[var(--text-muted)] font-bold flex-shrink-0";
+            });
+            e.target.className = "pb-1 border-b-2 border-[var(--accent)] text-[var(--accent)] font-extrabold flex-shrink-0";
+            renderChatList();
+        }
+
+        function openSettingsModal() { 
+            document.getElementById('settingsUsernameText').innerText = '@' + currentUser;
+            document.getElementById('settingsModal').classList.remove('hidden'); 
+        }
+        function closeSettingsModal() { document.getElementById('settingsModal').classList.add('hidden'); }
+
+        function saveProfileChanges() {
+            let avatar = document.getElementById('profileAvatarInput').value.trim();
+            if (avatar) db.ref(`users/${currentUser}/avatar`).set(avatar);
+            closeSettingsModal();
+        }
+
+        function openAddFriendModal() { document.getElementById('addFriendModal').classList.remove('hidden'); }
+        function closeAddFriendModal() { document.getElementById('addFriendModal').classList.add('hidden'); }
+        
+        function openCreateModal(type) { 
+            createModalType = type;
+            document.getElementById('createModalTitle').innerText = type === 'channel' ? 'Kanal Yaratish' : 'Guruh Yaratish';
+            document.getElementById('createModal').classList.remove('hidden'); 
+        }
+        function closeCreateModal() { document.getElementById('createModal').classList.add('hidden'); }
+
+        function confirmCreate() {
+            let name = document.getElementById('createNameInput').value.trim();
+            let icon = document.getElementById('createIconInput').value.trim() || '📢';
+            if (!name) return alert("Nomi kiritilmadi!");
+
+            let newId = createModalType + '_' + Date.now();
+            let chatData = {
+                id: newId,
+                name: name,
+                type: createModalType,
+                icon: icon,
+                owner: currentUser,
+                messages: { m1: { sender: 'other', text: `${name} ochildi.`, time: '12:00', type: 'text' } }
+            };
+            db.ref(`users/${currentUser}/chats/${newId}`).set(chatData);
+            closeCreateModal();
+            selectChat(newId);
+        }
+
+        function confirmAddFriend() {
+            let target = document.getElementById('friendUsernameInput').value.trim().toLowerCase().replace('@','');
+            let msg = document.getElementById('friendFirstMsgInput').value.trim();
+            if (!target || !msg) return alert("Maydonlarni to'ldiring!");
+
+            db.ref('users/' + target).once('value', (snapshot) => {
+                if (!snapshot.exists()) return alert("Bunday foydalanuvchi topilmadi!");
+                if (target === currentUser) return alert("O'zingizga yoza olmaysiz!");
+
+                let roomKey = [currentUser, target].sort().join('_');
+                let time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                
+                db.ref('globalChats/' + roomKey).push({ sender: currentUser, text: msg, time: time, type: 'text' });
+
+                let chatKey = 'chat_' + target;
+                let chatData = { id: chatKey, name: '@' + target, type: 'friend', targetUser: target, icon: snapshot.val().avatar || target[0].toUpperCase() };
+                db.ref(`users/${currentUser}/chats/${chatKey}`).set(chatData);
+
+                closeAddFriendModal();
+                selectChat(chatKey);
+            });
+        }
+
+        function filterChats() { renderChatList(); }
+        function logout() { localStorage.removeItem('uzrel_current_user'); location.reload(); }
+        function openChatInfoModal() { alert("Chat sozlamalari"); }
+        function closeChatInfoModal() {}
+    </script>
+</body>
+</html>
