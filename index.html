@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Uzrel Messenger - Cloud Firebase Edition</title>
+    <title>Uzrel Messenger - 35 Yillik Bayram Nashri</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
@@ -38,22 +39,62 @@
         }
         .uzrel-panel { background-color: var(--panel-glass); backdrop-filter: blur(20px); }
 
+        /* 35 Yillik Bayram Animatsiyalari CSS */
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(234, 179, 8, 0.6)); }
+            50% { transform: scale(1.08); filter: drop-shadow(0 0 20px rgba(234, 179, 8, 0.9)); }
+        }
+        .badge-35-years {
+            animation: pulseGlow 2.5s infinite ease-in-out;
+            background: linear-gradient(135deg, #f59e0b, #ef4444, #3b82f6);
+        }
+
+        @keyframes goldShimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .gold-text {
+            background: linear-gradient(90deg, #fcd34d, #ffffff, #fbbf24, #fcd34d);
+            background-size: 200% auto;
+            color: transparent;
+            -webkit-background-clip: text;
+            animation: goldShimmer 3s linear infinite;
+        }
+
+        #confettiCanvas {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
         @media (max-width: 768px) {
             .mobile-hidden { display: none !important; }
             .mobile-show { display: flex !important; }
         }
     </style>
 </head>
-<body class="w-screen h-screen overflow-hidden flex" data-theme="dark">
+<body class="w-screen h-screen overflow-hidden flex relative" data-theme="dark">
 
+    <!-- Bayram mushaklari uchun Canvas -->
+    <canvas id="confettiCanvas"></canvas>
+
+    <!-- Auth Screen (Kirish oynasi) -->
     <div id="authScreen" class="absolute inset-0 z-50 flex items-center justify-center p-4 bg-black/95 backdrop-blur-2xl">
-        <div class="uzrel-panel p-6 sm:p-8 rounded-[2rem] max-w-sm sm:max-w-md w-full border border-white/10 shadow-2xl space-y-5">
+        <div class="uzrel-panel p-6 sm:p-8 rounded-[2rem] max-w-sm sm:max-w-md w-full border border-white/10 shadow-2xl space-y-5 relative overflow-hidden">
+            
+            <!-- 35 Yillik Badge - Kirish Oynasida -->
+            <div class="absolute -top-3 -right-3 badge-35-years text-white font-black text-[10px] px-3 py-1.5 rounded-full shadow-xl border border-white/20 uppercase tracking-widest flex items-center gap-1">
+                <i class="fa-solid fa-crown text-amber-300"></i> 35 Yillik
+            </div>
+
             <div class="text-center space-y-2">
-                <div class="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-tr from-blue-600 via-indigo-600 to-pink-500 rounded-2xl mx-auto flex items-center justify-center text-white text-2xl sm:text-3xl shadow-lg">
+                <div class="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-tr from-amber-500 via-blue-600 to-emerald-500 rounded-2xl mx-auto flex items-center justify-center text-white text-2xl sm:text-3xl shadow-lg relative">
                     <i class="fa-solid fa-cube"></i>
+                    <span class="absolute -bottom-2 -right-2 bg-amber-400 text-slate-950 font-black text-[11px] px-1.5 py-0.5 rounded-md border border-white">35</span>
                 </div>
-                <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight bg-gradient-to-r from-blue-400 to-pink-400 bg-clip-text text-transparent">Uzrel Cloud</h2>
-                <p class="text-xs text-[var(--text-muted)]">Real vaqt rejimidagi Firebase bulut tarmog'i</p>
+                <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight gold-text">Uzrel Cloud</h2>
+                <p class="text-xs text-[var(--text-muted)]">35 Yillik Bayramona Maxsus Nashri 🎉</p>
             </div>
 
             <div class="flex bg-black/40 p-1 rounded-xl border border-white/10">
@@ -75,82 +116,103 @@
                     <label class="text-[10px] text-[var(--text-muted)] font-bold mb-1 block uppercase">Parol</label>
                     <input type="password" id="passwordInput" placeholder="******" class="w-full bg-black/40 border border-white/10 focus:border-blue-500 rounded-xl px-4 py-3 text-xs text-white focus:outline-none">
                 </div>
-                <button id="authActionBtn" onclick="handleAuth()" class="w-full py-3.5 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-blue-500/30 uppercase tracking-wider transition">Akkauntga kirish</button>
+                <button id="authActionBtn" onclick="handleAuth()" class="w-full py-3.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-amber-500 hover:opacity-95 text-white font-bold text-xs rounded-xl shadow-lg shadow-blue-500/30 uppercase tracking-wider transition">Akkauntga kirish</button>
             </div>
         </div>
     </div>
 
-    <div id="appScreen" class="w-full h-full flex relative overflow-hidden hidden">
-        <div id="sidebarPanel" class="w-full sm:w-[360px] uzrel-sidebar flex flex-col h-full z-10">
-            <div class="p-3 border-b border-[var(--border-color)] space-y-2.5">
-                <div class="flex items-center gap-2">
-                    <button onclick="openSettingsModal()" class="w-9 h-9 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-[var(--text-muted)] hover:text-white" title="Sozlamalar"><i class="fa-solid fa-bars text-xs"></i></button>
-                    <div class="relative flex-1">
-                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] text-xs"></i>
-                        <input type="text" id="searchInput" oninput="renderChatList()" placeholder="Qidirish..." class="w-full bg-black/20 border border-[var(--border-color)] focus:border-blue-500 rounded-full pl-8 pr-3 py-2 text-xs placeholder-[var(--text-muted)] focus:outline-none">
-                    </div>
-                    <div class="flex items-center gap-1">
-                        <button onclick="openCreateModal('channel')" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-[var(--text-muted)] hover:text-white" title="Kanal"><i class="fa-solid fa-bullhorn text-[11px]"></i></button>
-                        <button onclick="openCreateModal('group')" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-[var(--text-muted)] hover:text-white" title="Guruh"><i class="fa-solid fa-users text-[11px]"></i></button>
-                        <button onclick="openAddFriendModal()" class="w-8 h-8 rounded-full bg-blue-600/20 text-blue-400 flex items-center justify-center" title="Do'st qo'shish"><i class="fa-solid fa-user-plus text-[11px]"></i></button>
-                    </div>
-                </div>
-                <div class="flex items-center gap-4 text-[11px] overflow-x-auto pb-1" id="folderTabs">
-                    <button onclick="switchFolder('all', event)" class="pb-1 border-b-2 border-[var(--accent)] text-[var(--accent)] font-extrabold flex-shrink-0">Barchasi</button>
-                    <button onclick="switchFolder('friends', event)" class="pb-1 border-b-2 border-transparent text-[var(--text-muted)] font-bold flex-shrink-0">Do'stlar</button>
-                    <button onclick="switchFolder('channels', event)" class="pb-1 border-b-2 border-transparent text-[var(--text-muted)] font-bold flex-shrink-0">Kanallar</button>
-                    <button onclick="switchFolder('groups', event)" class="pb-1 border-b-2 border-transparent text-[var(--text-muted)] font-bold flex-shrink-0">Guruhlar</button>
-                    <button onclick="switchFolder('bots', event)" class="pb-1 border-b-2 border-transparent text-[var(--text-muted)] font-bold flex-shrink-0">Botlar</button>
-                </div>
+    <!-- Asosiy Dastur Interfeysi -->
+    <div id="appScreen" class="w-full h-full flex flex-col relative overflow-hidden hidden">
+        
+        <!-- Yuqori Bayram Banti (35 Yillik Top Banner) -->
+        <div class="bg-gradient-to-r from-emerald-600 via-blue-600 to-amber-500 text-white text-[11px] font-bold py-1 px-4 flex items-center justify-between shadow-md z-20">
+            <div class="flex items-center gap-2">
+                <span class="badge-35-years px-2 py-0.5 rounded-full text-[9px] uppercase tracking-wider font-extrabold text-white">35 Yillik</span>
+                <span class="truncate">✨ Qutlug' 35 Yillik Bayramingiz Muborag Bo'lsin! ✨</span>
             </div>
-            <div class="flex-1 overflow-y-auto divide-y divide-[var(--border-color)]" id="chatList"></div>
+            <button onclick="triggerFireworks()" class="bg-white/20 hover:bg-white/30 px-2.5 py-0.5 rounded-full text-[10px] backdrop-blur-sm transition flex items-center gap-1">
+                <i class="fa-solid fa-wand-magic-sparkles text-amber-300"></i> Mushak Otish
+            </button>
         </div>
 
-        <div id="chatPanel" class="w-full sm:flex-1 flex flex-col h-full uzrel-chat-bg relative mobile-hidden">
-            <div class="uzrel-panel px-4 py-2.5 border-b border-[var(--border-color)] flex items-center justify-between z-10">
-                <div class="flex items-center gap-2.5 cursor-pointer" onclick="openChatInfoModal()">
-                    <button onclick="backToSidebar(); event.stopPropagation();" class="sm:hidden w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-white"><i class="fa-solid fa-arrow-left text-xs"></i></button>
-                    <div id="activeAvatar" class="w-9 h-9 rounded-full bg-blue-600 flex items-center justify-center font-bold text-white text-xs overflow-hidden">K</div>
-                    <div>
-                        <h4 id="activeTitle" class="font-bold text-xs">Chat tanlanmagan</h4>
-                        <span class="text-[10px] text-[var(--text-muted)]" id="activeSubTitle">tarmoqqa ulangan</span>
+        <div class="w-full flex-1 flex relative overflow-hidden">
+            <!-- Sidebar Panel -->
+            <div id="sidebarPanel" class="w-full sm:w-[360px] uzrel-sidebar flex flex-col h-full z-10">
+                <div class="p-3 border-b border-[var(--border-color)] space-y-2.5">
+                    <div class="flex items-center gap-2">
+                        <button onclick="openSettingsModal()" class="w-9 h-9 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-[var(--text-muted)] hover:text-white" title="Sozlamalar"><i class="fa-solid fa-bars text-xs"></i></button>
+                        <div class="relative flex-1">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] text-xs"></i>
+                            <input type="text" id="searchInput" oninput="renderChatList()" placeholder="Qidirish..." class="w-full bg-black/20 border border-[var(--border-color)] focus:border-blue-500 rounded-full pl-8 pr-3 py-2 text-xs placeholder-[var(--text-muted)] focus:outline-none">
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <button onclick="openCreateModal('channel')" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-[var(--text-muted)] hover:text-white" title="Kanal"><i class="fa-solid fa-bullhorn text-[11px]"></i></button>
+                            <button onclick="openCreateModal('group')" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-[var(--text-muted)] hover:text-white" title="Guruh"><i class="fa-solid fa-users text-[11px]"></i></button>
+                            <button onclick="openAddFriendModal()" class="w-8 h-8 rounded-full bg-blue-600/20 text-blue-400 flex items-center justify-center" title="Do'st qo'shish"><i class="fa-solid fa-user-plus text-[11px]"></i></button>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 text-[11px] overflow-x-auto pb-1" id="folderTabs">
+                        <button onclick="switchFolder('all', event)" class="pb-1 border-b-2 border-[var(--accent)] text-[var(--accent)] font-extrabold flex-shrink-0">Barchasi</button>
+                        <button onclick="switchFolder('friends', event)" class="pb-1 border-b-2 border-transparent text-[var(--text-muted)] font-bold flex-shrink-0">Do'stlar</button>
+                        <button onclick="switchFolder('channels', event)" class="pb-1 border-b-2 border-transparent text-[var(--text-muted)] font-bold flex-shrink-0">Kanallar</button>
+                        <button onclick="switchFolder('groups', event)" class="pb-1 border-b-2 border-transparent text-[var(--text-muted)] font-bold flex-shrink-0">Guruhlar</button>
+                        <button onclick="switchFolder('bots', event)" class="pb-1 border-b-2 border-transparent text-[var(--text-muted)] font-bold flex-shrink-0">Botlar</button>
                     </div>
                 </div>
-                <div class="flex items-center gap-1" id="headerActions">
-                    <button onclick="openChatInfoModal()" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-[var(--text-muted)] hover:text-white" title="Sozlamalar"><i class="fa-solid fa-ellipsis-vertical text-xs"></i></button>
-                </div>
+                <div class="flex-1 overflow-y-auto divide-y divide-[var(--border-color)]" id="chatList"></div>
             </div>
 
-            <div id="messageContainer" class="flex-1 p-4 overflow-y-auto space-y-2"></div>
-
-            <div id="stickerPicker" class="absolute bottom-24 left-4 uzrel-panel p-3 rounded-2xl border border-[var(--border-color)] shadow-2xl hidden grid grid-cols-4 gap-2 z-30 w-64 max-h-48 overflow-y-auto">
-                <div onclick="sendSticker('🔥')" class="text-2xl cursor-pointer hover:scale-125 transition text-center p-2 bg-white/5 rounded-xl">🔥</div>
-                <div onclick="sendSticker('😎')" class="text-2xl cursor-pointer hover:scale-125 transition text-center p-2 bg-white/5 rounded-xl">😎</div>
-                <div onclick="sendSticker('🚀')" class="text-2xl cursor-pointer hover:scale-125 transition text-center p-2 bg-white/5 rounded-xl">🚀</div>
-                <div onclick="sendSticker('👍')" class="text-2xl cursor-pointer hover:scale-125 transition text-center p-2 bg-white/5 rounded-xl">👍</div>
-                <div onclick="sendSticker('🎉')" class="text-2xl cursor-pointer hover:scale-125 transition text-center p-2 bg-white/5 rounded-xl">🎉</div>
-                <div onclick="sendSticker('❤️')" class="text-2xl cursor-pointer hover:scale-125 transition text-center p-2 bg-white/5 rounded-xl">❤️</div>
-            </div>
-
-            <!-- Xabar yozish paneli - tepaga ko'tarildi (`pb-8 sm:pb-10 mb-2`) -->
-            <div class="uzrel-panel p-2.5 sm:p-3 pb-8 sm:pb-10 mb-2 border-t border-[var(--border-color)] flex items-center gap-2 z-10" id="chatInputArea">
-                <input type="file" id="fileInput" class="hidden" onchange="handleFileUpload(event)">
-                <button onclick="document.getElementById('fileInput').click()" class="w-9 h-9 rounded-full bg-white/5 hover:bg-white/10 text-[var(--text-muted)] hover:text-white flex items-center justify-center flex-shrink-0" title="Fayl">
-                    <i class="fa-solid fa-paperclip text-xs"></i>
-                </button>
-                <button onclick="toggleStickerPicker()" class="w-9 h-9 rounded-full bg-white/5 hover:bg-white/10 text-[var(--text-muted)] hover:text-white flex items-center justify-center flex-shrink-0" title="Stiker">
-                    <i class="fa-regular fa-face-smile text-xs"></i>
-                </button>
-                <div class="flex-1 relative">
-                    <input type="text" id="msgInput" placeholder="Xabar yozing..." class="w-full bg-black/20 border border-[var(--border-color)] focus:border-blue-500 rounded-full pl-4 pr-4 py-2.5 text-xs focus:outline-none" onkeypress="if(event.key==='Enter') sendMsg()">
+            <!-- Chat Panel -->
+            <div id="chatPanel" class="w-full sm:flex-1 flex flex-col h-full uzrel-chat-bg relative mobile-hidden">
+                <div class="uzrel-panel px-4 py-2.5 border-b border-[var(--border-color)] flex items-center justify-between z-10">
+                    <div class="flex items-center gap-2.5 cursor-pointer" onclick="openChatInfoModal()">
+                        <button onclick="backToSidebar(); event.stopPropagation();" class="sm:hidden w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-white"><i class="fa-solid fa-arrow-left text-xs"></i></button>
+                        <div id="activeAvatar" class="w-9 h-9 rounded-full bg-gradient-to-tr from-amber-500 to-blue-600 flex items-center justify-center font-bold text-white text-xs overflow-hidden shadow-md">K</div>
+                        <div>
+                            <h4 id="activeTitle" class="font-bold text-xs flex items-center gap-1.5">Chat tanlanmagan</h4>
+                            <span class="text-[10px] text-[var(--text-muted)]" id="activeSubTitle">tarmoqqa ulangan</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-1" id="headerActions">
+                        <button onclick="triggerFireworks()" class="w-8 h-8 rounded-full bg-amber-500/10 hover:bg-amber-500/20 flex items-center justify-center text-amber-400" title="Bayram Simvolizmlari"><i class="fa-solid fa-champagne-glasses text-xs"></i></button>
+                        <button onclick="openChatInfoModal()" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-[var(--text-muted)] hover:text-white" title="Sozlamalar"><i class="fa-solid fa-ellipsis-vertical text-xs"></i></button>
+                    </div>
                 </div>
-                <button onclick="sendMsg()" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-blue-600 hover:bg-blue-500 text-white flex items-center justify-center shadow-md flex-shrink-0">
-                    <i class="fa-solid fa-paper-plane text-xs"></i>
-                </button>
+
+                <div id="messageContainer" class="flex-1 p-4 overflow-y-auto space-y-2"></div>
+
+                <div id="stickerPicker" class="absolute bottom-24 left-4 uzrel-panel p-3 rounded-2xl border border-[var(--border-color)] shadow-2xl hidden grid grid-cols-4 gap-2 z-30 w-64 max-h-48 overflow-y-auto">
+                    <div onclick="sendSticker('🎉')" class="text-2xl cursor-pointer hover:scale-125 transition text-center p-2 bg-white/5 rounded-xl">🎉</div>
+                    <div onclick="sendSticker('🎆')" class="text-2xl cursor-pointer hover:scale-125 transition text-center p-2 bg-white/5 rounded-xl">🎆</div>
+                    <div onclick="sendSticker('🇺🇿')" class="text-2xl cursor-pointer hover:scale-125 transition text-center p-2 bg-white/5 rounded-xl">🇺🇿</div>
+                    <div onclick="sendSticker('🔥')" class="text-2xl cursor-pointer hover:scale-125 transition text-center p-2 bg-white/5 rounded-xl">🔥</div>
+                    <div onclick="sendSticker('😎')" class="text-2xl cursor-pointer hover:scale-125 transition text-center p-2 bg-white/5 rounded-xl">😎</div>
+                    <div onclick="sendSticker('🚀')" class="text-2xl cursor-pointer hover:scale-125 transition text-center p-2 bg-white/5 rounded-xl">🚀</div>
+                    <div onclick="sendSticker('👍')" class="text-2xl cursor-pointer hover:scale-125 transition text-center p-2 bg-white/5 rounded-xl">👍</div>
+                    <div onclick="sendSticker('❤️')" class="text-2xl cursor-pointer hover:scale-125 transition text-center p-2 bg-white/5 rounded-xl">❤️</div>
+                </div>
+
+                <!-- Xabar yozish paneli - tepaga ko'tarilgan (`pb-8 sm:pb-10 mb-2`) -->
+                <div class="uzrel-panel p-2.5 sm:p-3 pb-8 sm:pb-10 mb-2 border-t border-[var(--border-color)] flex items-center gap-2 z-10" id="chatInputArea">
+                    <input type="file" id="fileInput" class="hidden" onchange="handleFileUpload(event)">
+                    <button onclick="document.getElementById('fileInput').click()" class="w-9 h-9 rounded-full bg-white/5 hover:bg-white/10 text-[var(--text-muted)] hover:text-white flex items-center justify-center flex-shrink-0" title="Fayl">
+                        <i class="fa-solid fa-paperclip text-xs"></i>
+                    </button>
+                    <button onclick="toggleStickerPicker()" class="w-9 h-9 rounded-full bg-white/5 hover:bg-white/10 text-[var(--text-muted)] hover:text-white flex items-center justify-center flex-shrink-0" title="Stiker">
+                        <i class="fa-regular fa-face-smile text-xs"></i>
+                    </button>
+                    <div class="flex-1 relative">
+                        <input type="text" id="msgInput" placeholder="Xabar yozing (Masalan: 35 yillik muborak!)..." class="w-full bg-black/20 border border-[var(--border-color)] focus:border-blue-500 rounded-full pl-4 pr-4 py-2.5 text-xs focus:outline-none" onkeypress="if(event.key==='Enter') sendMsg()">
+                    </div>
+                    <button onclick="sendMsg()" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-r from-blue-600 to-amber-500 hover:opacity-90 text-white flex items-center justify-center shadow-md flex-shrink-0">
+                        <i class="fa-solid fa-paper-plane text-xs"></i>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
+    <!-- Modallar -->
     <div id="settingsModal" class="absolute inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4">
         <div class="uzrel-panel p-6 rounded-3xl max-w-sm w-full border border-white/10 space-y-4">
             <div class="flex justify-between items-center border-b border-[var(--border-color)] pb-2.5">
@@ -236,8 +298,45 @@
             setTheme(currentTheme);
             if (currentUser) {
                 initFirebaseListeners();
+                setTimeout(() => triggerFireworks(), 1200); // Tizimga kirganda mushak animatsiyasi
             }
         };
+
+        // 35 YILLIK MUSHAK ANIMATSIYASI FUNKSIYASI
+        function triggerFireworks() {
+            var myCanvas = document.getElementById('confettiCanvas');
+            var myConfetti = confetti.create(myCanvas, {
+                resize: true,
+                useWorker: true
+            });
+
+            // O'zbekiston bayrog'i va oltin ranglar konfettisi
+            var colors = ['#0099b5', '#ffffff', '#1eb053', '#d80027', '#fcd34d'];
+
+            myConfetti({
+                particleCount: 80,
+                spread: 100,
+                origin: { y: 0.6 },
+                colors: colors
+            });
+
+            setTimeout(() => {
+                myConfetti({
+                    particleCount: 50,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 },
+                    colors: colors
+                });
+                myConfetti({
+                    particleCount: 50,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 },
+                    colors: colors
+                });
+            }, 300);
+        }
 
         function initFirebaseListeners() {
             db.ref('users').on('value', (snapshot) => {
@@ -331,7 +430,7 @@
                         birthdate: birthdate,
                         avatar: name[0].toUpperCase(),
                         chats: {
-                            'saved_messages': { id: 'saved_messages', name: 'Saqlangan xabarlar', type: 'saved', icon: '🔖', messages: { m1: { sender: 'other', text: 'Xush kelibsiz!', time: '12:00', type: 'text' } } },
+                            'saved_messages': { id: 'saved_messages', name: 'Saqlangan xabarlar', type: 'saved', icon: '🔖', messages: { m1: { sender: 'other', text: '35 Yillik bayramingiz qutlug\' bo\'lsin! 🎉', time: '12:00', type: 'text' } } },
                             'bot_father': { id: 'bot_father', name: 'Uzrel BotFather', type: 'bots', icon: '🤖', messages: { m2: { sender: 'other', text: 'Bot yaratish uchun /newbot yuboring.', time: '12:00', type: 'text' } } }
                         }
                     };
@@ -341,6 +440,7 @@
                 currentUser = name;
                 localStorage.setItem('uzrel_current_user', name);
                 initFirebaseListeners();
+                triggerFireworks();
             });
         }
 
@@ -392,7 +492,7 @@
                 
                 list.innerHTML += `
                     <div onclick="selectChat('${chat.id}')" class="p-3 cursor-pointer ${activeClass} flex items-center gap-3 transition">
-                        <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center font-bold text-white text-xs flex-shrink-0">${chat.icon || chat.name[0].toUpperCase()}</div>
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-amber-500 to-blue-600 flex items-center justify-center font-bold text-white text-xs flex-shrink-0 shadow-sm">${chat.icon || chat.name[0].toUpperCase()}</div>
                         <div class="flex-1 min-w-0">
                             <div class="flex justify-between items-center"><h5 class="font-bold text-xs truncate">${chat.name}</h5></div>
                             <p class="text-[11px] text-[var(--text-muted)] truncate">${lastMsg}</p>
@@ -435,12 +535,21 @@
         function sendSticker(emoji) {
             toggleStickerPicker();
             dispatchMessage({ type: 'sticker', content: emoji });
+            if (['🎉', '🎆', '🇺🇿'].includes(emoji)) {
+                triggerFireworks();
+            }
         }
 
         function sendMsg() {
             let input = document.getElementById('msgInput');
             let text = input.value.trim();
             if (!text || !activeChatId) return;
+
+            // Trigger mushak animatsiyasi kalit so'zlar yozilganda
+            if (text.toLowerCase().includes('35') || text.toLowerCase().includes('bayram') || text.toLowerCase().includes('muborak') || text.toLowerCase().includes('mustaqillik')) {
+                triggerFireworks();
+            }
+
             dispatchMessage({ type: 'text', content: text });
             input.value = '';
         }
@@ -633,7 +742,7 @@
             
             content.innerHTML = `
                 <div class="text-center p-4">
-                    <div class="w-16 h-16 rounded-full bg-blue-600 flex items-center justify-center font-bold text-white text-xl mx-auto mb-2">${chat.icon || chat.name[0].toUpperCase()}</div>
+                    <div class="w-16 h-16 rounded-full bg-gradient-to-tr from-amber-500 to-blue-600 flex items-center justify-center font-bold text-white text-xl mx-auto mb-2 shadow-lg">${chat.icon || chat.name[0].toUpperCase()}</div>
                     <h4 class="font-extrabold text-sm">${chat.name}</h4>
                     <p class="text-[var(--text-muted)] text-[11px] mt-1">Turi: ${chat.type}</p>
                 </div>
