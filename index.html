@@ -2,13 +2,13 @@
 <html lang="uz">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>Uzrel Messenger</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+
+<title>Uzrel Messenger — 35 Edition</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
@@ -18,77 +18,85 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
 
 *{
     box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
 }
 
 :root{
-    --bg:#05070c;
-    --panel:rgba(14,18,29,.72);
-    --panel2:rgba(20,25,39,.82);
-    --line:rgba(255,255,255,.08);
-    --text:#f7f9ff;
-    --muted:#8791a8;
-    --blue:#4f8cff;
-    --cyan:#26d9ff;
-    --purple:#9b5cff;
-    --pink:#ff4fd8;
-    --green:#26e59b;
+    --bg:#030508;
+    --panel:rgba(10,15,24,.72);
+    --panel2:rgba(15,22,34,.82);
+    --line:rgba(255,255,255,.09);
+    --text:#f7faff;
+    --muted:#8290a5;
+    --blue:#38bdf8;
+    --cyan:#22d3ee;
+    --purple:#8b5cf6;
+    --pink:#ec4899;
+    --green:#22c55e;
+    --amber:#f59e0b;
 }
 
-body{
+html,body{
+    width:100%;
+    height:100%;
     margin:0;
     overflow:hidden;
     font-family:'Plus Jakarta Sans',sans-serif;
-    background:
-        radial-gradient(circle at 15% 10%,rgba(79,140,255,.16),transparent 30%),
-        radial-gradient(circle at 85% 20%,rgba(155,92,255,.14),transparent 30%),
-        radial-gradient(circle at 50% 100%,rgba(38,217,255,.08),transparent 35%),
-        var(--bg);
+    background:#000;
     color:var(--text);
 }
 
-button,input{
-    font-family:inherit;
-}
-
-::-webkit-scrollbar{
-    width:5px;
-}
-::-webkit-scrollbar-thumb{
-    background:rgba(255,255,255,.13);
-    border-radius:20px;
+body{
+    background:
+        radial-gradient(circle at 10% 10%,rgba(56,189,248,.13),transparent 30%),
+        radial-gradient(circle at 90% 15%,rgba(139,92,246,.14),transparent 30%),
+        radial-gradient(circle at 50% 100%,rgba(236,72,153,.09),transparent 35%),
+        #020407;
 }
 
 /* =========================
    BACKGROUND
 ========================= */
 
-.aurora{
+.bg-orb{
     position:fixed;
-    width:420px;
-    height:420px;
     border-radius:50%;
-    filter:blur(90px);
-    opacity:.18;
+    filter:blur(80px);
     pointer-events:none;
-    animation:floatAurora 12s infinite alternate ease-in-out;
+    z-index:0;
+    opacity:.25;
+    animation:floatOrb 12s ease-in-out infinite;
 }
 
-.aurora.a{
-    background:#356dff;
-    left:-150px;
-    top:-150px;
+.orb1{
+    width:320px;
+    height:320px;
+    background:#06b6d4;
+    left:-100px;
+    top:-100px;
 }
 
-.aurora.b{
-    background:#c33dff;
-    right:-170px;
-    bottom:-170px;
+.orb2{
+    width:280px;
+    height:280px;
+    background:#7c3aed;
+    right:-80px;
+    top:20%;
     animation-delay:-4s;
 }
 
-@keyframes floatAurora{
-    from{transform:translate(0,0) scale(1)}
-    to{transform:translate(70px,35px) scale(1.2)}
+.orb3{
+    width:260px;
+    height:260px;
+    background:#ec4899;
+    left:30%;
+    bottom:-140px;
+    animation-delay:-7s;
+}
+
+@keyframes floatOrb{
+    0%,100%{transform:translate3d(0,0,0) scale(1)}
+    50%{transform:translate3d(30px,-20px,0) scale(1.12)}
 }
 
 /* =========================
@@ -96,138 +104,231 @@ button,input{
 ========================= */
 
 .glass{
-    background:linear-gradient(
-        145deg,
-        rgba(255,255,255,.075),
-        rgba(255,255,255,.025)
-    );
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255,255,255,.075),
+            rgba(255,255,255,.025)
+        );
+    backdrop-filter:blur(28px) saturate(150%);
+    -webkit-backdrop-filter:blur(28px) saturate(150%);
     border:1px solid var(--line);
-    backdrop-filter:blur(25px);
-    -webkit-backdrop-filter:blur(25px);
     box-shadow:
-        0 25px 70px rgba(0,0,0,.28),
-        inset 0 1px 0 rgba(255,255,255,.05);
+        0 20px 60px rgba(0,0,0,.35),
+        inset 0 1px rgba(255,255,255,.06);
 }
 
-.glass-btn{
+.glass-heavy{
+    background:rgba(4,8,14,.82);
+    backdrop-filter:blur(35px);
+    -webkit-backdrop-filter:blur(35px);
     border:1px solid rgba(255,255,255,.09);
-    background:rgba(255,255,255,.045);
-    color:#aeb8ca;
-    transition:.25s;
-    backdrop-filter:blur(15px);
 }
 
-.glass-btn:hover{
-    transform:translateY(-2px) scale(1.04);
-    color:white;
-    border-color:rgba(79,140,255,.45);
-    background:rgba(79,140,255,.12);
-    box-shadow:0 10px 30px rgba(79,140,255,.16);
+.neon-border{
+    position:relative;
 }
 
-.glass-btn:active{
-    transform:scale(.94);
+.neon-border::before{
+    content:"";
+    position:absolute;
+    inset:-1px;
+    border-radius:inherit;
+    padding:1px;
+    background:
+        linear-gradient(
+            120deg,
+            transparent,
+            rgba(34,211,238,.55),
+            rgba(139,92,246,.55),
+            rgba(236,72,153,.45),
+            transparent
+        );
+    -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+    -webkit-mask-composite:xor;
+    mask-composite:exclude;
+    pointer-events:none;
+    opacity:.7;
 }
 
 /* =========================
-   3D LOGO
+   BUTTONS
+========================= */
+
+.modern-btn{
+    border:1px solid rgba(255,255,255,.08);
+    background:rgba(255,255,255,.045);
+    backdrop-filter:blur(15px);
+    color:#dbeafe;
+    border-radius:16px;
+    transition:.22s ease;
+    position:relative;
+    overflow:hidden;
+}
+
+.modern-btn::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(
+        120deg,
+        transparent,
+        rgba(255,255,255,.08),
+        transparent
+    );
+    transform:translateX(-100%);
+    transition:.5s;
+}
+
+.modern-btn:hover::after{
+    transform:translateX(100%);
+}
+
+.modern-btn:hover{
+    transform:translateY(-2px);
+    border-color:rgba(56,189,248,.35);
+    box-shadow:0 10px 35px rgba(0,0,0,.35);
+}
+
+.modern-btn:active{
+    transform:scale(.96);
+}
+
+.circle-btn{
+    width:42px;
+    height:42px;
+    border-radius:15px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.gradient-btn{
+    background:
+        linear-gradient(
+            135deg,
+            #06b6d4,
+            #2563eb 45%,
+            #7c3aed 75%,
+            #ec4899
+        );
+    box-shadow:
+        0 8px 30px rgba(37,99,235,.35),
+        inset 0 1px rgba(255,255,255,.25);
+    border:1px solid rgba(255,255,255,.16);
+}
+
+/* =========================
+   LOGO
 ========================= */
 
 .logo3d{
-    position:relative;
     width:48px;
     height:48px;
     border-radius:17px;
     display:flex;
     align-items:center;
     justify-content:center;
+    position:relative;
     background:
-        linear-gradient(145deg,#3d7cff,#7b43ff 50%,#16d9ff);
+        linear-gradient(
+            135deg,
+            #06b6d4,
+            #2563eb 45%,
+            #7c3aed,
+            #ec4899
+        );
     box-shadow:
-        0 15px 35px rgba(79,140,255,.35),
-        inset 0 2px 4px rgba(255,255,255,.35);
-    transform:perspective(500px) rotateX(7deg) rotateY(-7deg);
-}
-
-.logo3d:after{
-    content:"";
-    position:absolute;
-    inset:5px;
-    border-radius:13px;
-    border:1px solid rgba(255,255,255,.25);
+        0 15px 40px rgba(37,99,235,.35),
+        inset 0 1px rgba(255,255,255,.4);
+    transform:perspective(500px) rotateX(5deg) rotateY(-5deg);
 }
 
 .logo3d i{
-    position:relative;
-    z-index:2;
+    font-size:20px;
+    color:white;
+    filter:drop-shadow(0 3px 5px rgba(0,0,0,.35));
+}
+
+.logo35{
+    position:absolute;
+    right:-8px;
+    bottom:-7px;
+    font-size:8px;
+    font-weight:900;
+    padding:3px 5px;
+    border-radius:7px;
+    background:linear-gradient(135deg,#f59e0b,#ef4444);
+    border:2px solid #030508;
 }
 
 /* =========================
    STORIES
 ========================= */
 
-.story-strip{
+.story-scroll{
     display:flex;
     gap:12px;
     overflow-x:auto;
-    padding:10px 4px 12px;
+    scrollbar-width:none;
+    padding:4px 2px 9px;
 }
 
-.story-strip::-webkit-scrollbar{
+.story-scroll::-webkit-scrollbar{
     display:none;
 }
 
-.story{
-    flex:0 0 66px;
-    text-align:center;
+.story-card{
+    min-width:67px;
+    width:67px;
     cursor:pointer;
+    text-align:center;
 }
 
-.story-avatar{
+.story-ring{
     width:58px;
     height:58px;
     margin:auto;
-    padding:3px;
-    border-radius:20px;
-    background:linear-gradient(
-        135deg,
-        #26d9ff,
-        #7c4dff,
-        #ff4fd8,
-        #ffad42
-    );
-    box-shadow:0 7px 25px rgba(155,92,255,.25);
+    padding:2px;
+    border-radius:19px;
+    background:
+        conic-gradient(
+            #22d3ee,
+            #8b5cf6,
+            #ec4899,
+            #f59e0b,
+            #22d3ee
+        );
+    box-shadow:0 8px 25px rgba(56,189,248,.16);
 }
 
-.story-avatar-inner{
+.story-inner{
     width:100%;
     height:100%;
     border-radius:17px;
+    background:#080c13;
     display:flex;
     align-items:center;
     justify-content:center;
-    background:#101522;
     overflow:hidden;
-    font-size:20px;
+    border:2px solid #05080d;
 }
 
-.story-avatar-inner img{
+.story-inner img{
     width:100%;
     height:100%;
     object-fit:cover;
 }
 
 .story-name{
-    font-size:9px;
+    font-size:8px;
     margin-top:5px;
-    color:#aab3c5;
-    white-space:nowrap;
+    color:#aab5c5;
     overflow:hidden;
     text-overflow:ellipsis;
-}
-
-.add-story{
-    border:1px dashed rgba(79,140,255,.55);
+    white-space:nowrap;
 }
 
 /* =========================
@@ -235,78 +336,84 @@ button,input{
 ========================= */
 
 .chat-item{
-    position:relative;
     margin:5px 8px;
-    padding:12px;
-    border-radius:20px;
+    padding:10px;
+    border-radius:18px;
+    cursor:pointer;
     display:flex;
     align-items:center;
-    gap:12px;
-    cursor:pointer;
+    gap:11px;
+    transition:.2s;
     border:1px solid transparent;
-    transition:.25s;
 }
 
 .chat-item:hover{
-    transform:translateX(3px);
     background:rgba(255,255,255,.045);
-    border-color:rgba(255,255,255,.06);
+    transform:translateX(2px);
 }
 
 .chat-item.active{
     background:
         linear-gradient(
-            100deg,
-            rgba(79,140,255,.17),
-            rgba(155,92,255,.08)
+            110deg,
+            rgba(34,211,238,.13),
+            rgba(99,102,241,.09),
+            rgba(236,72,153,.06)
         );
-    border-color:rgba(79,140,255,.2);
+    border-color:rgba(56,189,248,.16);
     box-shadow:
-        0 10px 35px rgba(0,0,0,.2),
-        inset 0 1px 0 rgba(255,255,255,.05);
+        inset 3px 0 #22d3ee,
+        0 8px 30px rgba(0,0,0,.18);
 }
 
-.avatar3d{
-    position:relative;
+.avatar{
     width:48px;
     height:48px;
-    min-width:48px;
+    flex-shrink:0;
     border-radius:17px;
     display:flex;
     align-items:center;
     justify-content:center;
+    overflow:hidden;
+    font-size:18px;
     font-weight:800;
     color:white;
-    background:linear-gradient(
-        145deg,
-        #4f8cff,
-        #814eff,
-        #23d9ff
-    );
+    background:
+        linear-gradient(
+            135deg,
+            #0891b2,
+            #2563eb,
+            #7c3aed,
+            #ec4899
+        );
     box-shadow:
-        0 10px 25px rgba(79,140,255,.25),
-        inset 0 2px 3px rgba(255,255,255,.25);
+        0 10px 30px rgba(0,0,0,.35),
+        inset 0 1px rgba(255,255,255,.22);
+    transform:perspective(400px) rotateX(2deg);
 }
 
-.online-dot{
-    position:absolute;
-    width:11px;
-    height:11px;
-    right:-1px;
-    bottom:-1px;
-    border:2px solid #101522;
-    background:#28e49a;
-    border-radius:50%;
+.avatar img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
 }
 
 /* =========================
-   MESSAGE
+   CHAT
 ========================= */
+
+.chat-background{
+    background:
+        radial-gradient(circle at 20% 20%,rgba(34,211,238,.045),transparent 25%),
+        radial-gradient(circle at 80% 70%,rgba(139,92,246,.055),transparent 25%),
+        radial-gradient(rgba(255,255,255,.025) 1px,transparent 1px);
+    background-size:auto,auto,26px 26px;
+}
 
 .message-row{
     display:flex;
-    margin:8px 0;
-    animation:messageIn .22s ease;
+    margin:6px 0;
+    animation:messageIn .25s ease;
 }
 
 @keyframes messageIn{
@@ -320,67 +427,39 @@ button,input{
     }
 }
 
-.message-row.me{
-    justify-content:flex-end;
-}
-
-.message-bubble{
-    max-width:min(70%,520px);
-    padding:11px 14px;
+.bubble{
+    max-width:min(560px,78%);
+    padding:10px 13px;
     border-radius:20px;
     position:relative;
-    box-shadow:0 8px 25px rgba(0,0,0,.16);
+    box-shadow:0 10px 30px rgba(0,0,0,.18);
+    word-break:break-word;
 }
 
-.message-bubble.other{
-    background:rgba(22,28,42,.82);
-    border:1px solid rgba(255,255,255,.065);
-    border-bottom-left-radius:7px;
-}
-
-.message-bubble.me{
+.bubble.me{
+    margin-left:auto;
     background:
         linear-gradient(
             135deg,
-            rgba(61,119,255,.94),
-            rgba(116,67,255,.92)
+            rgba(14,165,233,.82),
+            rgba(79,70,229,.82),
+            rgba(124,58,237,.82)
         );
-    border-bottom-right-radius:7px;
+    border:1px solid rgba(255,255,255,.14);
+    border-bottom-right-radius:6px;
 }
 
-.message-time{
+.bubble.other{
+    background:rgba(20,28,42,.84);
+    border:1px solid rgba(255,255,255,.075);
+    border-bottom-left-radius:6px;
+}
+
+.msg-time{
     font-size:8px;
     opacity:.58;
     text-align:right;
     margin-top:4px;
-}
-
-/* =========================
-   BOT KEYBOARD
-========================= */
-
-.bot-keyboard{
-    margin-top:9px;
-    display:grid;
-    grid-template-columns:repeat(2,minmax(0,1fr));
-    gap:5px;
-}
-
-.bot-keyboard button{
-    min-height:34px;
-    border:1px solid rgba(79,140,255,.2);
-    background:rgba(79,140,255,.08);
-    color:#69a5ff;
-    border-radius:8px;
-    font-size:10px;
-    font-weight:700;
-    transition:.2s;
-}
-
-.bot-keyboard button:hover{
-    background:rgba(79,140,255,.18);
-    color:white;
-    transform:translateY(-1px);
 }
 
 /* =========================
@@ -389,55 +468,71 @@ button,input{
 
 .sticker-panel{
     position:absolute;
-    bottom:86px;
-    left:14px;
-    width:310px;
-    max-width:calc(100vw - 28px);
+    bottom:85px;
+    left:15px;
+    width:300px;
+    max-height:300px;
     padding:12px;
-    border-radius:23px;
+    border-radius:22px;
     display:none;
-    z-index:40;
+    grid-template-columns:repeat(4,1fr);
+    gap:8px;
+    z-index:50;
 }
 
 .sticker-panel.open{
-    display:block;
+    display:grid;
     animation:pop .18s ease;
 }
 
-@keyframes pop{
-    from{
-        opacity:0;
-        transform:scale(.92) translateY(8px);
-    }
-    to{
-        opacity:1;
-        transform:none;
-    }
-}
-
-.sticker-grid{
-    display:grid;
-    grid-template-columns:repeat(5,1fr);
-    gap:7px;
-    max-height:210px;
-    overflow:auto;
-}
-
 .sticker{
-    aspect-ratio:1;
-    border-radius:15px;
+    height:55px;
+    border-radius:16px;
+    background:rgba(255,255,255,.045);
     display:flex;
     align-items:center;
     justify-content:center;
-    background:rgba(255,255,255,.04);
-    font-size:27px;
+    font-size:31px;
     cursor:pointer;
     transition:.18s;
 }
 
 .sticker:hover{
     transform:scale(1.12) rotate(-3deg);
-    background:rgba(79,140,255,.13);
+    background:rgba(56,189,248,.1);
+}
+
+@keyframes pop{
+    from{opacity:0;transform:translateY(10px) scale(.96)}
+    to{opacity:1;transform:none}
+}
+
+/* =========================
+   BOT KEYBOARD
+========================= */
+
+.bot-keyboard{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:6px;
+    margin-top:9px;
+}
+
+.bot-key{
+    border:1px solid rgba(56,189,248,.22);
+    background:rgba(34,211,238,.06);
+    color:#67e8f9;
+    padding:8px 7px;
+    border-radius:10px;
+    font-size:9px;
+    font-weight:700;
+    cursor:pointer;
+    transition:.18s;
+}
+
+.bot-key:hover{
+    background:rgba(34,211,238,.14);
+    transform:translateY(-1px);
 }
 
 /* =========================
@@ -447,74 +542,75 @@ button,input{
 .modal{
     position:fixed;
     inset:0;
-    background:rgba(0,0,0,.72);
-    backdrop-filter:blur(18px);
+    z-index:200;
     display:none;
     align-items:center;
     justify-content:center;
-    padding:16px;
-    z-index:100;
+    padding:18px;
+    background:rgba(0,0,0,.72);
+    backdrop-filter:blur(16px);
 }
 
 .modal.open{
     display:flex;
 }
 
-.modal-card{
-    width:min(440px,100%);
+.modal-box{
+    width:min(470px,100%);
     max-height:90vh;
-    overflow:auto;
-    border-radius:28px;
+    overflow-y:auto;
     padding:20px;
+    border-radius:28px;
+    position:relative;
 }
 
 .field{
     width:100%;
-    border:1px solid rgba(255,255,255,.08);
-    background:rgba(0,0,0,.22);
-    color:white;
+    padding:12px 14px;
     border-radius:15px;
-    padding:11px 13px;
     outline:none;
-    font-size:11px;
+    color:white;
+    background:rgba(0,0,0,.28);
+    border:1px solid rgba(255,255,255,.08);
+    font-size:12px;
 }
 
 .field:focus{
-    border-color:rgba(79,140,255,.6);
-    box-shadow:0 0 0 3px rgba(79,140,255,.08);
+    border-color:rgba(34,211,238,.55);
+    box-shadow:0 0 0 3px rgba(34,211,238,.06);
 }
 
 /* =========================
-   STORY VIEWER
+   EMPTY STATE
 ========================= */
 
-.story-viewer{
-    position:fixed;
-    inset:0;
-    background:#020308;
-    display:none;
+.empty-orb{
+    width:120px;
+    height:120px;
+    border-radius:40px;
+    margin:auto;
+    background:
+        radial-gradient(circle at 35% 25%,#67e8f9,transparent 13%),
+        linear-gradient(135deg,#0891b2,#2563eb,#7c3aed,#ec4899);
+    box-shadow:
+        0 30px 80px rgba(37,99,235,.28),
+        inset 0 2px 8px rgba(255,255,255,.25);
+    display:flex;
     align-items:center;
     justify-content:center;
-    z-index:200;
+    transform:perspective(500px) rotateX(12deg) rotateY(-12deg);
+    animation:orb3d 5s ease-in-out infinite;
 }
 
-.story-viewer.open{
-    display:flex;
+.empty-orb i{
+    font-size:43px;
+    color:white;
+    filter:drop-shadow(0 5px 10px rgba(0,0,0,.4));
 }
 
-.story-view-image{
-    max-width:100%;
-    max-height:100%;
-    object-fit:contain;
-}
-
-.story-close{
-    position:absolute;
-    top:20px;
-    right:20px;
-    width:42px;
-    height:42px;
-    border-radius:50%;
+@keyframes orb3d{
+    0%,100%{transform:perspective(500px) rotateX(12deg) rotateY(-12deg) translateY(0)}
+    50%{transform:perspective(500px) rotateX(-8deg) rotateY(14deg) translateY(-10px)}
 }
 
 /* =========================
@@ -522,368 +618,482 @@ button,input{
 ========================= */
 
 @media(max-width:768px){
-
-    .desktop-only{
+    .mobile-hide{
         display:none!important;
     }
 
-    #sidebarPanel{
-        width:100%;
-    }
-
-    .message-bubble{
-        max-width:82%;
+    .bubble{
+        max-width:84%;
     }
 
     .sticker-panel{
-        bottom:78px;
+        left:8px;
+        right:8px;
+        width:auto;
     }
 }
 
-.hidden{
-    display:none!important;
+::-webkit-scrollbar{
+    width:5px;
+    height:5px;
+}
+
+::-webkit-scrollbar-thumb{
+    background:rgba(148,163,184,.18);
+    border-radius:20px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="aurora a"></div>
-<div class="aurora b"></div>
+<div class="bg-orb orb1"></div>
+<div class="bg-orb orb2"></div>
+<div class="bg-orb orb3"></div>
 
 <canvas id="confettiCanvas"
 style="position:fixed;inset:0;pointer-events:none;z-index:9999"></canvas>
 
 <!-- ================= AUTH ================= -->
 
-<div id="authScreen"
-class="fixed inset-0 z-[300] flex items-center justify-center p-4">
+<section id="authScreen"
+class="fixed inset-0 z-[100] flex items-center justify-center p-5"
+style="background:rgba(0,0,0,.88);backdrop-filter:blur(30px)">
 
-    <div class="glass rounded-[32px] p-7 w-full max-w-md">
+    <div class="glass neon-border modal-box" style="max-width:430px">
 
         <div class="flex justify-center mb-5">
-            <div class="logo3d text-white text-xl">
+            <div class="logo3d">
                 <i class="fa-solid fa-cube"></i>
+                <span class="logo35">35</span>
             </div>
         </div>
 
         <div class="text-center mb-6">
-            <h1 class="text-3xl font-extrabold tracking-tight">
-                Uzrel<span class="text-blue-400">.</span>
+            <h1 class="text-3xl font-black tracking-tight">
+                <span style="
+                background:linear-gradient(90deg,#22d3ee,#8b5cf6,#ec4899,#f59e0b);
+                -webkit-background-clip:text;
+                color:transparent">
+                    Uzrel
+                </span>
             </h1>
-            <p class="text-xs text-[var(--muted)] mt-2">
-                Modern Messenger
+
+            <p class="text-xs text-slate-400 mt-2">
+                35 Yillik maxsus nashr
             </p>
         </div>
 
-        <div class="glass p-1 rounded-2xl flex mb-5">
-            <button id="tabLoginBtn"
-            onclick="switchAuthMode('login')"
-            class="flex-1 py-2.5 rounded-xl bg-blue-600 text-white text-xs font-bold">
+        <div class="grid grid-cols-2 gap-2 p-1 rounded-2xl bg-black/30 mb-5">
+
+            <button id="loginTab"
+            onclick="switchAuth('login')"
+            class="modern-btn py-2.5 text-xs font-bold"
+            style="background:rgba(37,99,235,.5)">
                 Kirish
             </button>
 
-            <button id="tabRegisterBtn"
-            onclick="switchAuthMode('register')"
-            class="flex-1 py-2.5 rounded-xl text-xs font-bold text-[var(--muted)]">
+            <button id="registerTab"
+            onclick="switchAuth('register')"
+            class="modern-btn py-2.5 text-xs font-bold">
                 Ro'yxatdan o'tish
             </button>
+
         </div>
 
-        <div id="errorMsg"
-        class="hidden text-xs text-red-400 bg-red-500/10 border border-red-500/20 rounded-xl p-3 mb-3">
+        <div id="authError"
+        class="hidden mb-4 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-300 text-xs text-center">
         </div>
 
-        <input id="usernameInput"
+        <input
+        id="usernameInput"
         class="field mb-3"
         placeholder="Username">
 
-        <input id="birthdateInput"
+        <input
+        id="birthInput"
         type="date"
         class="field mb-3 hidden">
 
-        <input id="passwordInput"
+        <input
+        id="passwordInput"
         type="password"
         class="field mb-4"
         placeholder="Parol">
 
-        <button id="authActionBtn"
+        <button
         onclick="handleAuth()"
-        class="w-full py-3.5 rounded-2xl text-xs font-extrabold text-white
-        bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-500
-        shadow-lg shadow-blue-500/20">
-            Akkauntga kirish
+        class="gradient-btn w-full py-3.5 rounded-2xl font-bold text-xs">
+            <i class="fa-solid fa-arrow-right-to-bracket mr-2"></i>
+            <span id="authButtonText">Kirish</span>
         </button>
 
+        <p class="text-[9px] text-slate-500 text-center mt-5">
+            Demo messenger • Uzrel
+        </p>
     </div>
-</div>
+</section>
 
 
 <!-- ================= APP ================= -->
 
-<div id="appScreen" class="hidden w-screen h-screen relative">
+<section id="appScreen" class="hidden w-full h-full relative z-10">
 
-    <div class="flex h-full">
+    <!-- TOP BAR -->
 
-        <!-- SIDEBAR -->
+    <div class="h-9 flex items-center justify-between px-3 sm:px-5
+    bg-black/50 border-b border-white/5 backdrop-blur-xl">
 
-        <aside id="sidebarPanel"
-        class="w-[370px] h-full border-r border-white/5
-        bg-black/25 backdrop-blur-3xl flex flex-col">
+        <div class="flex items-center gap-2 min-w-0">
 
-            <!-- PROFILE TOP -->
+            <span class="px-2 py-1 rounded-full text-[8px] font-black
+            bg-gradient-to-r from-cyan-500 via-blue-500 to-pink-500">
+                35 YILLIK
+            </span>
 
-            <div class="p-4">
+            <span class="text-[9px] text-slate-400 truncate">
+                Uzrel Messenger
+            </span>
 
-                <div class="glass rounded-[24px] p-3 flex items-center gap-3">
+        </div>
+
+        <button
+        onclick="fireworks()"
+        class="text-[9px] text-amber-300 hover:text-white transition">
+            <i class="fa-solid fa-wand-magic-sparkles mr-1"></i>
+            Effekt
+        </button>
+
+    </div>
+
+
+    <div class="w-full h-[calc(100%-36px)] flex">
+
+        <!-- ================= SIDEBAR ================= -->
+
+        <aside
+        id="sidebar"
+        class="w-full sm:w-[390px] h-full glass-heavy border-r border-white/5 flex flex-col">
+
+            <!-- PROFILE -->
+
+            <div class="p-3 border-b border-white/5">
+
+                <div class="flex items-center gap-3">
 
                     <div id="myAvatar"
-                    class="avatar3d">
+                    class="avatar cursor-pointer"
+                    onclick="openSettings()">
                         K
-                        <span class="online-dot"></span>
                     </div>
 
                     <div class="flex-1 min-w-0">
+
                         <div id="myName"
                         class="font-extrabold text-xs truncate">
                             User
                         </div>
 
                         <div id="myUsername"
-                        class="text-[10px] text-[var(--muted)]">
+                        class="text-[9px] text-cyan-400 truncate">
                             @user
                         </div>
+
                     </div>
 
-                    <button onclick="openSettingsModal()"
-                    class="glass-btn w-9 h-9 rounded-2xl">
+                    <button
+                    onclick="openSettings()"
+                    class="modern-btn circle-btn"
+                    title="Sozlamalar">
+
                         <i class="fa-solid fa-sliders text-xs"></i>
+
                     </button>
 
                 </div>
 
             </div>
 
+
+            <!-- SEARCH -->
+
+            <div class="p-3 pb-2">
+
+                <div class="relative">
+
+                    <i class="fa-solid fa-magnifying-glass
+                    absolute left-4 top-1/2 -translate-y-1/2
+                    text-slate-500 text-xs"></i>
+
+                    <input
+                    id="searchInput"
+                    oninput="renderChats()"
+                    class="field pl-10 rounded-full"
+                    placeholder="Chatlar, do'stlar, guruhlar...">
+
+                </div>
+
+            </div>
+
+
             <!-- STORIES -->
 
-            <div class="px-4">
+            <div class="px-3 pb-2">
 
-                <div class="flex items-center justify-between mb-1">
+                <div class="flex justify-between items-center mb-1">
 
-                    <span class="text-[10px] font-extrabold uppercase tracking-wider">
+                    <span class="text-[9px] font-extrabold uppercase tracking-wider text-slate-500">
                         Hikoyalar
                     </span>
 
-                    <button onclick="openStoryModal()"
-                    class="text-blue-400 text-[10px] font-bold">
+                    <button
+                    onclick="openStoryModal('user')"
+                    class="text-[9px] text-cyan-400">
                         + Hikoya
                     </button>
 
                 </div>
 
-                <div id="storyStrip" class="story-strip"></div>
+                <div id="storyList" class="story-scroll"></div>
 
             </div>
 
-            <!-- SEARCH -->
 
-            <div class="px-4 pb-3">
+            <!-- PEOPLE -->
 
-                <div class="glass rounded-2xl flex items-center px-3">
+            <div class="px-3 pb-2 relative">
 
-                    <i class="fa-solid fa-magnifying-glass
-                    text-[var(--muted)] text-xs"></i>
+                <button
+                onclick="togglePeopleMenu()"
+                class="modern-btn w-full py-3 px-4 flex items-center gap-3">
 
-                    <input id="searchInput"
-                    oninput="renderChatList()"
-                    class="bg-transparent outline-none flex-1 px-3 py-3 text-xs"
-                    placeholder="Qidirish...">
+                    <span class="w-9 h-9 rounded-xl
+                    bg-gradient-to-br from-cyan-500/30 to-purple-500/30
+                    flex items-center justify-center">
+                        <i class="fa-solid fa-user-group text-cyan-300 text-xs"></i>
+                    </span>
+
+                    <span class="flex-1 text-left">
+                        <span class="block text-[10px] font-extrabold">
+                            Do'stlar & Guruhlar
+                        </span>
+                        <span class="block text-[8px] text-slate-500">
+                            Odamlar va jamoalarni boshqarish
+                        </span>
+                    </span>
+
+                    <i class="fa-solid fa-chevron-down text-[9px] text-slate-500"></i>
+
+                </button>
+
+                <div
+                id="peopleMenu"
+                class="hidden glass absolute left-3 right-3 top-[60px] z-40 p-2 rounded-2xl">
+
+                    <button
+                    onclick="openAddFriend();hidePeopleMenu()"
+                    class="modern-btn w-full p-3 flex gap-3 items-center mb-1">
+
+                        <span>➕</span>
+                        <span class="text-[10px] font-bold">Do'st qo'shish</span>
+
+                    </button>
+
+                    <button
+                    onclick="openCreate('group');hidePeopleMenu()"
+                    class="modern-btn w-full p-3 flex gap-3 items-center mb-1">
+
+                        <span>👥</span>
+                        <span class="text-[10px] font-bold">Guruh yaratish</span>
+
+                    </button>
+
+                    <button
+                    onclick="openCreate('channel');hidePeopleMenu()"
+                    class="modern-btn w-full p-3 flex gap-3 items-center">
+
+                        <span>📢</span>
+                        <span class="text-[10px] font-bold">Kanal yaratish</span>
+
+                    </button>
 
                 </div>
 
             </div>
 
-            <!-- ACTIONS -->
 
-            <div class="px-4 pb-3 flex gap-2">
+            <!-- FILTERS -->
 
-                <button onclick="openAddFriendModal()"
-                class="glass-btn rounded-2xl px-3 py-2 text-[10px] font-bold">
-                    <i class="fa-solid fa-user-plus mr-1"></i>
-                    Do'st
-                </button>
+            <div class="px-3 py-1 flex gap-2 overflow-x-auto"
+            id="filters">
 
-                <button onclick="openCreateModal('group')"
-                class="glass-btn rounded-2xl px-3 py-2 text-[10px] font-bold">
-                    <i class="fa-solid fa-users mr-1"></i>
-                    Guruh
-                </button>
-
-                <button onclick="openCreateModal('channel')"
-                class="glass-btn rounded-2xl px-3 py-2 text-[10px] font-bold">
-                    <i class="fa-solid fa-bullhorn mr-1"></i>
-                    Kanal
-                </button>
-
-            </div>
-
-            <!-- FOLDERS -->
-
-            <div id="folderTabs"
-            class="px-4 flex gap-2 overflow-x-auto pb-2">
-
-                <button onclick="switchFolder('all',event)"
-                class="glass-btn rounded-full px-3 py-1.5 text-[9px] font-bold text-blue-400">
+                <button onclick="setFolder('all',this)"
+                class="modern-btn px-3 py-1.5 text-[9px] font-bold">
                     Barchasi
                 </button>
 
-                <button onclick="switchFolder('friends',event)"
-                class="glass-btn rounded-full px-3 py-1.5 text-[9px] font-bold">
+                <button onclick="setFolder('friend',this)"
+                class="modern-btn px-3 py-1.5 text-[9px] font-bold">
                     Do'stlar
                 </button>
 
-                <button onclick="switchFolder('groups',event)"
-                class="glass-btn rounded-full px-3 py-1.5 text-[9px] font-bold">
+                <button onclick="setFolder('group',this)"
+                class="modern-btn px-3 py-1.5 text-[9px] font-bold">
                     Guruhlar
                 </button>
 
-                <button onclick="switchFolder('channels',event)"
-                class="glass-btn rounded-full px-3 py-1.5 text-[9px] font-bold">
+                <button onclick="setFolder('channel',this)"
+                class="modern-btn px-3 py-1.5 text-[9px] font-bold">
                     Kanallar
                 </button>
 
-                <button onclick="switchFolder('bots',event)"
-                class="glass-btn rounded-full px-3 py-1.5 text-[9px] font-bold">
+                <button onclick="setFolder('bots',this)"
+                class="modern-btn px-3 py-1.5 text-[9px] font-bold">
                     Botlar
                 </button>
 
             </div>
 
-            <div id="chatList"
-            class="flex-1 overflow-y-auto pb-3">
+
+            <!-- CHAT LIST -->
+
+            <div
+            id="chatList"
+            class="flex-1 overflow-y-auto px-1 py-1">
             </div>
 
         </aside>
 
 
-        <!-- CHAT -->
+        <!-- ================= CHAT ================= -->
 
-        <main id="chatPanel"
-        class="flex-1 h-full flex flex-col relative">
+        <main
+        id="chatPanel"
+        class="hidden sm:flex flex-1 h-full flex-col relative chat-background">
 
             <!-- HEADER -->
 
-            <header class="p-3">
+            <header
+            class="glass px-3 sm:px-5 py-2.5 flex items-center gap-3 border-b border-white/5">
 
-                <div class="glass rounded-[22px] px-4 py-2.5
-                flex items-center justify-between">
+                <button
+                onclick="backToSidebar()"
+                class="modern-btn circle-btn sm:hidden">
 
-                    <div class="flex items-center gap-3">
+                    <i class="fa-solid fa-arrow-left text-xs"></i>
 
-                        <button onclick="backToSidebar()"
-                        class="glass-btn w-9 h-9 rounded-2xl md:hidden">
-                            <i class="fa-solid fa-arrow-left text-xs"></i>
-                        </button>
+                </button>
 
-                        <div id="activeAvatar"
-                        class="avatar3d w-10 h-10 min-w-10">
-                            U
-                        </div>
+                <div id="activeAvatar" class="avatar"
+                style="width:42px;height:42px">
+                    U
+                </div>
 
-                        <div>
-                            <div id="activeTitle"
-                            class="font-extrabold text-xs">
-                                Chat tanlanmagan
-                            </div>
+                <div class="flex-1 min-w-0">
 
-                            <div id="activeSubTitle"
-                            class="text-[9px] text-[var(--muted)]">
-                                Uzrel
-                            </div>
-                        </div>
-
+                    <div id="activeTitle"
+                    class="font-extrabold text-xs truncate">
+                        Chat tanlanmagan
                     </div>
 
-                    <div class="flex gap-1">
-
-                        <button onclick="triggerFireworks()"
-                        class="glass-btn w-9 h-9 rounded-2xl text-yellow-400">
-                            <i class="fa-solid fa-wand-magic-sparkles text-xs"></i>
-                        </button>
-
-                        <button onclick="openChatInfoModal()"
-                        class="glass-btn w-9 h-9 rounded-2xl">
-                            <i class="fa-solid fa-ellipsis text-xs"></i>
-                        </button>
-
+                    <div id="activeSubtitle"
+                    class="text-[9px] text-cyan-400">
+                        Uzrel
                     </div>
 
                 </div>
+
+                <button
+                onclick="openChatInfo()"
+                class="modern-btn circle-btn">
+
+                    <i class="fa-solid fa-ellipsis text-xs"></i>
+
+                </button>
 
             </header>
 
 
             <!-- MESSAGES -->
 
-            <div id="messageContainer"
-            class="flex-1 overflow-y-auto px-4 py-2">
+            <div
+            id="messageContainer"
+            class="flex-1 overflow-y-auto p-3 sm:p-5">
             </div>
 
 
-            <!-- STICKER PANEL -->
+            <!-- STICKERS -->
 
-            <div id="stickerPicker"
-            class="sticker-panel glass">
+            <div id="stickerPanel"
+            class="sticker-panel glass neon-border">
 
-                <div class="flex justify-between items-center mb-2">
-                    <span class="font-extrabold text-xs">
-                        Stikerlar
-                    </span>
+                <div class="sticker" onclick="sendSticker('😀')">😀</div>
+                <div class="sticker" onclick="sendSticker('😂')">😂</div>
+                <div class="sticker" onclick="sendSticker('😎')">😎</div>
+                <div class="sticker" onclick="sendSticker('🔥')">🔥</div>
 
-                    <button onclick="toggleStickerPicker()"
-                    class="text-[var(--muted)]">
-                        <i class="fa-solid fa-xmark"></i>
-                    </button>
-                </div>
+                <div class="sticker" onclick="sendSticker('❤️')">❤️</div>
+                <div class="sticker" onclick="sendSticker('💙')">💙</div>
+                <div class="sticker" onclick="sendSticker('💜')">💜</div>
+                <div class="sticker" onclick="sendSticker('💚')">💚</div>
 
-                <div id="stickerGrid"
-                class="sticker-grid">
-                </div>
+                <div class="sticker" onclick="sendSticker('🎉')">🎉</div>
+                <div class="sticker" onclick="sendSticker('🎆')">🎆</div>
+                <div class="sticker" onclick="sendSticker('🚀')">🚀</div>
+                <div class="sticker" onclick="sendSticker('🇺🇿')">🇺🇿</div>
+
+                <div class="sticker" onclick="sendSticker('👍')">👍</div>
+                <div class="sticker" onclick="sendSticker('👑')">👑</div>
+                <div class="sticker" onclick="sendSticker('💎')">💎</div>
+                <div class="sticker" onclick="sendSticker('⚡')">⚡</div>
 
             </div>
 
 
-            <!-- INPUT -->
+            <!-- COMPOSER -->
 
-            <div class="p-3">
+            <div
+            class="p-2.5 sm:p-3 pb-4 sm:pb-5 glass border-t border-white/5">
 
-                <div class="glass rounded-[25px] p-2 flex items-center gap-2">
+                <div class="flex items-center gap-2">
 
-                    <input type="file"
+                    <input
                     id="fileInput"
+                    type="file"
+                    accept="image/*"
                     class="hidden"
-                    onchange="handleFileUpload(event)">
+                    onchange="handleImage(event)">
 
-                    <button onclick="document.getElementById('fileInput').click()"
-                    class="glass-btn w-10 h-10 rounded-2xl">
+                    <button
+                    onclick="document.getElementById('fileInput').click()"
+                    class="modern-btn circle-btn"
+                    title="Rasm">
+
                         <i class="fa-solid fa-paperclip text-xs"></i>
+
                     </button>
 
-                    <button onclick="toggleStickerPicker()"
-                    class="glass-btn w-10 h-10 rounded-2xl">
+                    <button
+                    onclick="toggleStickers()"
+                    class="modern-btn circle-btn"
+                    title="Stiker">
+
                         <i class="fa-regular fa-face-smile text-xs"></i>
+
                     </button>
 
-                    <input id="msgInput"
-                    class="bg-transparent outline-none flex-1 text-xs px-2"
+                    <input
+                    id="msgInput"
+                    class="field flex-1 rounded-full"
                     placeholder="Xabar yozing..."
-                    onkeydown="if(event.key==='Enter')sendMsg()">
+                    onkeydown="if(event.key==='Enter')sendMessage()">
 
-                    <button onclick="sendMsg()"
-                    class="w-11 h-11 rounded-2xl text-white
-                    bg-gradient-to-br from-blue-600 via-purple-600 to-cyan-500
-                    shadow-lg shadow-blue-500/20">
+                    <button
+                    onclick="sendMessage()"
+                    class="gradient-btn circle-btn">
+
                         <i class="fa-solid fa-paper-plane text-xs"></i>
+
                     </button>
 
                 </div>
@@ -893,114 +1103,91 @@ class="fixed inset-0 z-[300] flex items-center justify-center p-4">
         </main>
 
     </div>
-</div>
+
+</section>
 
 
 <!-- ================= MODALS ================= -->
 
-<!-- STORY -->
+<div id="settingsModal" class="modal">
 
-<div id="storyModal" class="modal">
-
-    <div class="modal-card glass">
+    <div class="modal-box glass neon-border">
 
         <div class="flex justify-between items-center mb-5">
 
-            <h3 class="font-extrabold text-sm">
-                Hikoya qo'shish
-            </h3>
+            <div>
+                <h2 class="font-black text-sm">
+                    Sozlamalar
+                </h2>
 
-            <button onclick="closeModal('storyModal')"
-            class="glass-btn w-8 h-8 rounded-xl">
+                <p class="text-[9px] text-slate-500">
+                    Profil va interfeys
+                </p>
+            </div>
+
+            <button onclick="closeModal('settingsModal')"
+            class="modern-btn circle-btn">
                 <i class="fa-solid fa-xmark text-xs"></i>
             </button>
 
         </div>
 
-        <div class="space-y-3">
 
-            <input id="storyCaption"
-            class="field"
-            placeholder="Hikoya matni...">
+        <label class="text-[9px] text-slate-500 uppercase font-bold">
+            Avatar
+        </label>
 
-            <input id="storyImage"
-            type="file"
-            accept="image/*"
-            class="field">
-
-            <button onclick="publishStory()"
-            class="w-full py-3 rounded-2xl
-            bg-gradient-to-r from-blue-600 to-purple-600
-            text-white text-xs font-extrabold">
-                Hikoyani joylash
-            </button>
-
-        </div>
-
-    </div>
-</div>
+        <input id="avatarInput"
+        class="field mt-2 mb-3"
+        placeholder="😀 yoki emoji">
 
 
-<!-- SETTINGS -->
+        <label class="text-[9px] text-slate-500 uppercase font-bold">
+            Ism
+        </label>
 
-<div id="settingsModal" class="modal">
+        <input id="displayNameInput"
+        class="field mt-2 mb-3"
+        placeholder="Ismingiz">
 
-    <div class="modal-card glass">
 
-        <div class="flex justify-between mb-5">
+        <label class="text-[9px] text-slate-500 uppercase font-bold">
+            Bio
+        </label>
 
-            <h3 class="font-extrabold">
-                Profil sozlamalari
-            </h3>
+        <input id="bioInput"
+        class="field mt-2 mb-4"
+        placeholder="Bio...">
 
-            <button onclick="closeModal('settingsModal')"
-            class="glass-btn w-8 h-8 rounded-xl">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
 
-        </div>
+        <button
+        onclick="saveSettings()"
+        class="gradient-btn w-full py-3 rounded-2xl text-xs font-bold mb-3">
 
-        <div class="space-y-3">
+            <i class="fa-solid fa-check mr-2"></i>
+            Saqlash
 
-            <input id="profileAvatarInput"
-            class="field"
-            placeholder="Avatar emoji">
+        </button>
 
-            <input id="profileNameInput"
-            class="field"
-            placeholder="Ism">
 
-            <input id="profileBioInput"
-            class="field"
-            placeholder="Bio">
+        <button
+        onclick="fireworks()"
+        class="modern-btn w-full py-3 rounded-2xl text-xs font-bold mb-3">
 
-            <button onclick="saveProfileChanges()"
-            class="w-full py-3 rounded-2xl bg-blue-600 text-white text-xs font-bold">
-                Saqlash
-            </button>
+            🎆 Effektlarni ko'rish
 
-            <div class="grid grid-cols-2 gap-2">
+        </button>
 
-                <button onclick="setTheme('dark')"
-                class="glass-btn rounded-2xl p-3 text-xs">
-                    🌙 Dark
-                </button>
 
-                <button onclick="setTheme('amoled')"
-                class="glass-btn rounded-2xl p-3 text-xs">
-                    🖤 AMOLED
-                </button>
+        <button
+        onclick="logout()"
+        class="w-full py-3 rounded-2xl text-xs font-bold
+        bg-red-500/10 border border-red-500/20 text-red-300">
 
-            </div>
+            <i class="fa-solid fa-right-from-bracket mr-2"></i>
+            Chiqish
 
-            <button onclick="logout()"
-            class="w-full py-3 rounded-2xl
-            bg-red-500/10 border border-red-500/20
-            text-red-400 text-xs font-bold">
-                Chiqish
-            </button>
-
-        </div>
+        </button>
 
     </div>
 </div>
@@ -1008,30 +1195,40 @@ class="fixed inset-0 z-[300] flex items-center justify-center p-4">
 
 <!-- ADD FRIEND -->
 
-<div id="addFriendModal" class="modal">
+<div id="friendModal" class="modal">
 
-    <div class="modal-card glass">
+    <div class="modal-box glass">
 
-        <h3 class="font-extrabold mb-4">
-            Do'st qo'shish
-        </h3>
+        <div class="flex justify-between items-center mb-4">
 
-        <div class="space-y-3">
+            <h2 class="font-black text-sm">
+                Do'st qo'shish
+            </h2>
 
-            <input id="friendUsernameInput"
-            class="field"
-            placeholder="Username">
-
-            <input id="friendFirstMsgInput"
-            class="field"
-            placeholder="Birinchi xabar">
-
-            <button onclick="confirmAddFriend()"
-            class="w-full py-3 rounded-2xl bg-blue-600 text-white text-xs font-bold">
-                Qo'shish
+            <button onclick="closeModal('friendModal')"
+            class="modern-btn circle-btn">
+                <i class="fa-solid fa-xmark text-xs"></i>
             </button>
 
         </div>
+
+        <input
+        id="friendInput"
+        class="field mb-3"
+        placeholder="Username">
+
+        <input
+        id="firstMessageInput"
+        class="field mb-4"
+        placeholder="Birinchi xabar...">
+
+        <button
+        onclick="addFriend()"
+        class="gradient-btn w-full py-3 rounded-2xl text-xs font-bold">
+
+            ➕ Do'st qo'shish
+
+        </button>
 
     </div>
 </div>
@@ -1041,31 +1238,127 @@ class="fixed inset-0 z-[300] flex items-center justify-center p-4">
 
 <div id="createModal" class="modal">
 
-    <div class="modal-card glass">
+    <div class="modal-box glass">
 
-        <h3 id="createModalTitle"
-        class="font-extrabold mb-4">
-            Yaratish
-        </h3>
+        <div class="flex justify-between items-center mb-4">
 
-        <div class="space-y-3">
-
-            <input id="createNameInput"
-            class="field"
-            placeholder="Nomi">
-
-            <input id="createIconInput"
-            class="field"
-            placeholder="Emoji">
-
-            <button onclick="confirmCreate()"
-            class="w-full py-3 rounded-2xl bg-blue-600 text-white text-xs font-bold">
+            <h2 id="createTitle" class="font-black text-sm">
                 Yaratish
+            </h2>
+
+            <button onclick="closeModal('createModal')"
+            class="modern-btn circle-btn">
+                <i class="fa-solid fa-xmark text-xs"></i>
             </button>
 
         </div>
 
+        <input
+        id="createName"
+        class="field mb-3"
+        placeholder="Nomi">
+
+        <input
+        id="createIcon"
+        class="field mb-4"
+        placeholder="Emoji ikonka 👥">
+
+        <button
+        onclick="createChat()"
+        class="gradient-btn w-full py-3 rounded-2xl text-xs font-bold">
+
+            ✨ Yaratish
+
+        </button>
+
     </div>
+</div>
+
+
+<!-- STORY -->
+
+<div id="storyModal" class="modal">
+
+    <div class="modal-box glass">
+
+        <div class="flex justify-between items-center mb-4">
+
+            <div>
+                <h2 class="font-black text-sm">
+                    Hikoya qo'shish
+                </h2>
+
+                <p id="storyTargetText"
+                class="text-[9px] text-cyan-400">
+                    Profil hikoyasi
+                </p>
+            </div>
+
+            <button onclick="closeModal('storyModal')"
+            class="modern-btn circle-btn">
+                <i class="fa-solid fa-xmark text-xs"></i>
+            </button>
+
+        </div>
+
+        <input
+        id="storyImage"
+        type="file"
+        accept="image/*"
+        class="field mb-3">
+
+        <input
+        id="storyCaption"
+        class="field mb-4"
+        placeholder="Hikoya matni...">
+
+        <button
+        onclick="publishStory()"
+        class="gradient-btn w-full py-3 rounded-2xl text-xs font-bold">
+
+            📖 Hikoyani joylash
+
+        </button>
+
+    </div>
+</div>
+
+
+<!-- STORY VIEW -->
+
+<div id="storyViewer" class="modal">
+
+    <div class="w-full max-w-md relative">
+
+        <button
+        onclick="closeModal('storyViewer')"
+        class="absolute top-3 right-3 z-10
+        modern-btn circle-btn">
+
+            <i class="fa-solid fa-xmark"></i>
+
+        </button>
+
+        <div class="glass rounded-[28px] overflow-hidden">
+
+            <img
+            id="storyViewerImage"
+            class="w-full max-h-[70vh] object-cover">
+
+            <div class="p-4">
+
+                <div id="storyViewerTitle"
+                class="font-bold text-sm"></div>
+
+                <div id="storyViewerCaption"
+                class="text-xs text-slate-400 mt-1"></div>
+
+            </div>
+
+        </div>
+
+    </div>
+
 </div>
 
 
@@ -1073,18 +1366,19 @@ class="fixed inset-0 z-[300] flex items-center justify-center p-4">
 
 <div id="chatInfoModal" class="modal">
 
-    <div class="modal-card glass">
+    <div class="modal-box glass">
 
-        <div class="flex justify-between mb-5">
+        <div class="flex justify-between items-center mb-5">
 
-            <h3 id="chatInfoTitle"
-            class="font-extrabold">
+            <h2 class="font-black text-sm">
                 Chat
-            </h3>
+            </h2>
 
             <button onclick="closeModal('chatInfoModal')"
-            class="glass-btn w-8 h-8 rounded-xl">
-                <i class="fa-solid fa-xmark"></i>
+            class="modern-btn circle-btn">
+
+                <i class="fa-solid fa-xmark text-xs"></i>
+
             </button>
 
         </div>
@@ -1095,208 +1389,178 @@ class="fixed inset-0 z-[300] flex items-center justify-center p-4">
 </div>
 
 
-<!-- STORY VIEWER -->
-
-<div id="storyViewer" class="story-viewer">
-
-    <button onclick="closeModal('storyViewer')"
-    class="story-close glass-btn">
-        <i class="fa-solid fa-xmark"></i>
-    </button>
-
-    <img id="storyViewImage"
-    class="story-view-image hidden">
-
-    <div id="storyViewText"
-    class="text-white text-xl font-bold text-center px-8">
-    </div>
-
-</div>
-
-
 <script>
 
-/* =========================================
+/* ============================================================
    FIREBASE
-========================================= */
+============================================================ */
 
 const firebaseConfig = {
-    apiKey:"AIzaSyDummyKeyForCompatModeToWork",
-    authDomain:"uzrel-ceeed.firebaseapp.com",
-    databaseURL:"https://uzrel-ceeed-default-rtdb.firebaseio.com",
-    projectId:"uzrel-ceeed",
-    storageBucket:"uzrel-ceeed.appspot.com",
-    messagingSenderId:"000000000000",
-    appId:"1:000000000000:web:0000000000000000"
+    apiKey: "AIzaSyDummyKeyForCompatModeToWork",
+    authDomain: "uzrel-ceeed.firebaseapp.com",
+    databaseURL: "https://uzrel-ceeed-default-rtdb.firebaseio.com",
+    projectId: "uzrel-ceeed",
+    storageBucket: "uzrel-ceeed.appspot.com",
+    messagingSenderId: "000000000000",
+    appId: "1:000000000000:web:0000000000000000"
 };
 
 firebase.initializeApp(firebaseConfig);
-const db=firebase.database();
+
+const db = firebase.database();
 
 
-/* =========================================
+/* ============================================================
    STATE
-========================================= */
+============================================================ */
 
-let currentUser=localStorage.getItem("uzrel_current_user");
-let activeUserData=null;
-let allCloudUsers={};
-let globalRooms={};
-let activeChatId=null;
-let currentFolder="all";
-let authMode="login";
-let createModalType=null;
+let currentUser =
+    localStorage.getItem("uzrel_current_user") || null;
 
-
-/* =========================================
-   STICKERS
-========================================= */
-
-const STICKERS=[
-"😀","😂","🤣","😎","🤩",
-"🥳","🔥","❤️","💙","💜",
-"👍","👎","👏","🙏","💯",
-"🚀","🎉","🎆","🇺🇿","⭐",
-"😈","🤖","👑","🫡","😱",
-"😭","🤣","😴","🤝","✨"
-];
-
-function renderStickerPicker(){
-
-    const grid=document.getElementById("stickerGrid");
-
-    grid.innerHTML="";
-
-    STICKERS.forEach(s=>{
-
-        const div=document.createElement("div");
-
-        div.className="sticker";
-        div.textContent=s;
-
-        div.onclick=()=>{
-            sendSticker(s);
-        };
-
-        grid.appendChild(div);
-
-    });
-}
+let activeUserData = null;
+let activeChatId = null;
+let authMode = "login";
+let currentFolder = "all";
+let allUsers = {};
+let globalChats = {};
+let storyTarget = "user";
 
 
-/* =========================================
-   START
-========================================= */
+/* ============================================================
+   INIT
+============================================================ */
 
-window.onload=()=>{
-
-    renderStickerPicker();
+window.addEventListener("load",()=>{
 
     if(currentUser){
 
-        initFirebaseListeners();
+        startFirebase();
 
     }
 
-};
+});
 
 
-/* =========================================
-   SAFE HTML
-========================================= */
+/* ============================================================
+   AUTH
+============================================================ */
 
-function escapeHTML(value){
+function switchAuth(mode){
 
-    return String(value??"")
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
+    authMode = mode;
+
+    const loginTab =
+        document.getElementById("loginTab");
+
+    const registerTab =
+        document.getElementById("registerTab");
+
+    const birth =
+        document.getElementById("birthInput");
+
+    const text =
+        document.getElementById("authButtonText");
+
+    if(mode==="login"){
+
+        loginTab.style.background =
+            "rgba(37,99,235,.5)";
+
+        registerTab.style.background =
+            "rgba(255,255,255,.045)";
+
+        birth.classList.add("hidden");
+
+        text.textContent="Kirish";
+
+    }else{
+
+        registerTab.style.background =
+            "rgba(37,99,235,.5)";
+
+        loginTab.style.background =
+            "rgba(255,255,255,.045)";
+
+        birth.classList.remove("hidden");
+
+        text.textContent="Ro'yxatdan o'tish";
+
+    }
 
 }
 
 
-/* =========================================
-   AUTH
-========================================= */
+function showAuthError(text){
 
-function switchAuthMode(mode){
+    const box =
+        document.getElementById("authError");
 
-    authMode=mode;
+    box.textContent=text;
 
-    document.getElementById("errorMsg")
-    .classList.add("hidden");
-
-    const login=document.getElementById("tabLoginBtn");
-    const reg=document.getElementById("tabRegisterBtn");
-    const birth=document.getElementById("birthdateInput");
-    const btn=document.getElementById("authActionBtn");
-
-    login.className=
-    "flex-1 py-2.5 rounded-xl text-xs font-bold";
-
-    reg.className=
-    "flex-1 py-2.5 rounded-xl text-xs font-bold";
-
-    if(mode==="login"){
-
-        login.classList.add("bg-blue-600","text-white");
-
-        birth.classList.add("hidden");
-
-        btn.innerText="Akkauntga kirish";
-
-    }else{
-
-        reg.classList.add("bg-blue-600","text-white");
-
-        birth.classList.remove("hidden");
-
-        btn.innerText="Ro'yxatdan o'tish";
-
-    }
+    box.classList.remove("hidden");
 
 }
 
 
 function handleAuth(){
 
-    const name=document.getElementById("usernameInput")
-    .value.trim().toLowerCase();
+    const username =
+        document.getElementById("usernameInput")
+        .value.trim()
+        .toLowerCase();
 
-    const pass=document.getElementById("passwordInput").value;
+    const password =
+        document.getElementById("passwordInput")
+        .value;
 
-    const birth=document.getElementById("birthdateInput").value;
+    const birth =
+        document.getElementById("birthInput")
+        .value;
 
-    const error=document.getElementById("errorMsg");
+    if(!username || !password){
 
-    if(!name||!pass){
+        showAuthError(
+            "Username va parolni kiriting."
+        );
 
-        error.innerText="Username va parolni kiriting!";
-        error.classList.remove("hidden");
         return;
 
     }
 
-    db.ref("users/"+name).once("value",snap=>{
+    if(!/^[a-z0-9_]{3,24}$/.test(username)){
 
-        const user=snap.val();
+        showAuthError(
+            "Username faqat a-z, 0-9 va _ dan iborat bo'lsin."
+        );
+
+        return;
+
+    }
+
+    db.ref("users/"+username)
+    .once("value")
+    .then(snapshot=>{
+
+        const user = snapshot.val();
 
         if(authMode==="login"){
 
             if(!user){
 
-                error.innerText="Akkaunt topilmadi!";
-                error.classList.remove("hidden");
+                showAuthError(
+                    "Bunday akkaunt topilmadi."
+                );
+
                 return;
 
             }
 
-            if(user.password!==pass){
+            if(user.password!==password){
 
-                error.innerText="Parol noto'g'ri!";
-                error.classList.remove("hidden");
+                showAuthError(
+                    "Parol noto'g'ri."
+                );
+
                 return;
 
             }
@@ -1305,706 +1569,601 @@ function handleAuth(){
 
             if(!birth){
 
-                error.innerText="Tug'ilgan kunni kiriting!";
-                error.classList.remove("hidden");
+                showAuthError(
+                    "Tug'ilgan kunni kiriting."
+                );
+
                 return;
 
             }
 
             if(user){
 
-                error.innerText="Username band!";
-                error.classList.remove("hidden");
+                showAuthError(
+                    "Bu username band."
+                );
+
                 return;
 
             }
 
-            db.ref("users/"+name).set({
+            const data = {
 
-                password:pass,
+                password:password,
                 birthdate:birth,
-                avatar:name[0].toUpperCase(),
-                displayName:name,
-                bio:"",
-                stories:{},
+
+                displayName:
+                    username.charAt(0).toUpperCase()+
+                    username.slice(1),
+
+                avatar:
+                    username.charAt(0).toUpperCase(),
+
+                bio:"Uzrel foydalanuvchisi",
 
                 chats:{
 
                     saved_messages:{
+
                         id:"saved_messages",
                         name:"Saqlangan xabarlar",
                         type:"saved",
                         icon:"🔖",
+
                         messages:{
-                            m1:{
+
+                            welcome:{
                                 sender:"other",
-                                text:"Uzrel'ga xush kelibsiz! 🚀",
-                                time:"12:00",
-                                type:"text"
+                                type:"text",
+                                text:"Uzrel'ga xush kelibsiz! 🎉",
+                                time:now()
                             }
+
                         }
+
                     },
 
                     bot_father:{
+
                         id:"bot_father",
-                        name:"BotFather",
+                        name:"Uzrel BotFather",
                         type:"bots",
                         icon:"🤖",
-                        bot:true,
+
                         messages:{
-                            m1:{
+
+                            welcome:{
                                 sender:"other",
-                                text:"Bot yaratish uchun /newbot yuboring.",
-                                time:"12:00",
                                 type:"text",
+                                text:"Bot boshqaruvi uchun quyidagi tugmalardan foydalaning.",
+                                time:now(),
                                 keyboard:true
                             }
+
                         }
+
                     }
 
                 }
 
-            });
+            };
+
+            return db.ref(
+                "users/"+username
+            ).set(data);
 
         }
 
-        currentUser=name;
+    })
+    .then(()=>{
+
+        currentUser=username;
 
         localStorage.setItem(
             "uzrel_current_user",
-            name
+            username
         );
 
-        initFirebaseListeners();
+        startFirebase();
 
-        triggerFireworks();
+    })
+    .catch(error=>{
+
+        showAuthError(
+            "Firebase xatosi: "+error.message
+        );
 
     });
 
 }
 
 
-/* =========================================
+/* ============================================================
    FIREBASE LISTENERS
-========================================= */
+============================================================ */
 
-function initFirebaseListeners(){
+function startFirebase(){
 
-    db.ref("users").on("value",snap=>{
+    db.ref("users").on("value",snapshot=>{
 
-        allCloudUsers=snap.val()||{};
+        allUsers =
+            snapshot.val() || {};
 
-        if(!allCloudUsers[currentUser]){
+        if(!allUsers[currentUser]){
 
             logout();
+
             return;
 
         }
 
-        activeUserData=allCloudUsers[currentUser];
+        activeUserData =
+            allUsers[currentUser];
 
-        document.getElementById("authScreen")
+        document
+        .getElementById("authScreen")
         .style.display="none";
 
-        document.getElementById("appScreen")
+        document
+        .getElementById("appScreen")
         .classList.remove("hidden");
 
-        updateMyProfile();
-
-        renderChatList();
-
+        renderProfile();
         renderStories();
+        renderChats();
 
-        if(activeChatId)
+        if(activeChatId){
+
             renderMessages();
-
-    });
-
-
-    db.ref("globalChats").on("value",snap=>{
-
-        globalRooms=snap.val()||{};
-
-        renderChatList();
-
-        if(activeChatId)
-            renderMessages();
-
-    });
-
-}
-
-
-/* =========================================
-   PROFILE
-========================================= */
-
-function updateMyProfile(){
-
-    if(!activeUserData)return;
-
-    const avatar=
-    activeUserData.avatar ||
-    currentUser[0].toUpperCase();
-
-    document.getElementById("myAvatar")
-    .childNodes[0].textContent=avatar;
-
-    document.getElementById("myName").innerText=
-    activeUserData.displayName||currentUser;
-
-    document.getElementById("myUsername").innerText=
-    "@"+currentUser;
-
-}
-
-
-function openSettingsModal(){
-
-    document.getElementById("profileAvatarInput").value=
-    activeUserData.avatar||"";
-
-    document.getElementById("profileNameInput").value=
-    activeUserData.displayName||currentUser;
-
-    document.getElementById("profileBioInput").value=
-    activeUserData.bio||"";
-
-    openModal("settingsModal");
-
-}
-
-
-function saveProfileChanges(){
-
-    const avatar=
-    document.getElementById("profileAvatarInput").value.trim();
-
-    const name=
-    document.getElementById("profileNameInput").value.trim();
-
-    const bio=
-    document.getElementById("profileBioInput").value.trim();
-
-    db.ref("users/"+currentUser).update({
-
-        avatar:avatar||currentUser[0].toUpperCase(),
-        displayName:name||currentUser,
-        bio:bio
-
-    });
-
-    closeModal("settingsModal");
-
-}
-
-
-/* =========================================
-   STORIES
-========================================= */
-
-function renderStories(){
-
-    const strip=document.getElementById("storyStrip");
-
-    if(!strip)return;
-
-    strip.innerHTML="";
-
-    /* MY STORY */
-
-    const mine=document.createElement("div");
-
-    mine.className="story";
-
-    mine.innerHTML=`
-
-        <div class="story-avatar add-story">
-
-            <div class="story-avatar-inner">
-                ${escapeHTML(
-                    activeUserData?.avatar||
-                    currentUser?.[0]?.toUpperCase()||
-                    "U"
-                )}
-            </div>
-
-        </div>
-
-        <div class="story-name">Mening story</div>
-
-    `;
-
-    mine.onclick=()=>{
-
-        const stories=activeUserData?.stories||{};
-        const arr=Object.values(stories);
-
-        if(arr.length)
-            openStory(arr[arr.length-1]);
-        else
-            openStoryModal();
-
-    };
-
-    strip.appendChild(mine);
-
-
-    /* USERS */
-
-    Object.entries(allCloudUsers).forEach(([username,user])=>{
-
-        if(username===currentUser)return;
-
-        const stories=user.stories||{};
-        const arr=Object.values(stories);
-
-        if(!arr.length)return;
-
-        const latest=arr[arr.length-1];
-
-        const item=document.createElement("div");
-
-        item.className="story";
-
-        item.innerHTML=`
-
-            <div class="story-avatar">
-
-                <div class="story-avatar-inner">
-
-                    ${
-                        latest.image
-                        ? `<img src="${latest.image}">`
-                        : escapeHTML(user.avatar||username[0].toUpperCase())
-                    }
-
-                </div>
-
-            </div>
-
-            <div class="story-name">
-                ${escapeHTML(user.displayName||username)}
-            </div>
-
-        `;
-
-        item.onclick=()=>openStory(latest);
-
-        strip.appendChild(item);
-
-    });
-
-}
-
-
-/* =========================================
-   PUBLISH STORY
-========================================= */
-
-function openStoryModal(){
-
-    document.getElementById("storyCaption").value="";
-    document.getElementById("storyImage").value="";
-
-    openModal("storyModal");
-
-}
-
-
-function publishStory(){
-
-    const caption=
-    document.getElementById("storyCaption").value.trim();
-
-    const file=
-    document.getElementById("storyImage").files[0];
-
-    if(!caption&&!file){
-
-        alert("Rasm yoki matn qo'shing!");
-        return;
-
-    }
-
-    if(file){
-
-        if(file.size>2*1024*1024){
-
-            alert("Rasm 2 MB dan kichik bo'lsin.");
-            return;
 
         }
 
-        const reader=new FileReader();
+    });
 
-        reader.onload=e=>{
 
-            saveStory(caption,e.target.result);
+    db.ref("globalChats").on("value",snapshot=>{
 
-        };
+        globalChats =
+            snapshot.val() || {};
 
-        reader.readAsDataURL(file);
+        renderChats();
+
+        if(activeChatId){
+
+            renderMessages();
+
+        }
+
+    });
+
+}
+
+
+/* ============================================================
+   PROFILE
+============================================================ */
+
+function renderProfile(){
+
+    if(!activeUserData) return;
+
+    document.getElementById("myName")
+    .textContent =
+        activeUserData.displayName ||
+        currentUser;
+
+    document.getElementById("myUsername")
+    .textContent =
+        "@"+currentUser;
+
+    setAvatar(
+        document.getElementById("myAvatar"),
+        activeUserData.avatar ||
+        currentUser[0].toUpperCase()
+    );
+
+}
+
+
+function setAvatar(el,value){
+
+    el.innerHTML="";
+
+    if(typeof value==="string" &&
+       value.startsWith("data:image")){
+
+        const img=document.createElement("img");
+
+        img.src=value;
+
+        el.appendChild(img);
 
     }else{
 
-        saveStory(caption,"");
+        el.textContent=value || "U";
 
     }
 
 }
 
 
-function saveStory(caption,image){
+/* ============================================================
+   FOLDERS
+============================================================ */
 
-    const story={
-
-        id:Date.now(),
-        caption,
-        image,
-        time:new Date().toLocaleTimeString(
-            [],
-            {hour:"2-digit",minute:"2-digit"}
-        )
-
-    };
-
-    db.ref(
-        "users/"+currentUser+"/stories/"+story.id
-    ).set(story);
-
-    closeModal("storyModal");
-
-    triggerFireworks();
-
-}
-
-
-/* =========================================
-   STORY VIEWER
-========================================= */
-
-function openStory(story){
-
-    const viewer=document.getElementById("storyViewer");
-    const img=document.getElementById("storyViewImage");
-    const text=document.getElementById("storyViewText");
-
-    if(story.image){
-
-        img.src=story.image;
-        img.classList.remove("hidden");
-
-    }else{
-
-        img.classList.add("hidden");
-
-    }
-
-    text.innerText=story.caption||"";
-
-    viewer.classList.add("open");
-
-}
-
-
-/* =========================================
-   CHATS
-========================================= */
-
-function getChats(){
-
-    return activeUserData?.chats||{};
-
-}
-
-
-function switchFolder(folder,e){
+function setFolder(folder,button){
 
     currentFolder=folder;
 
-    document.querySelectorAll("#folderTabs button")
-    .forEach(b=>b.classList.remove("text-blue-400"));
+    document
+    .querySelectorAll("#filters button")
+    .forEach(b=>{
+        b.style.background="rgba(255,255,255,.045)";
+    });
 
-    e.currentTarget.classList.add("text-blue-400");
+    button.style.background=
+        "rgba(37,99,235,.35)";
 
-    renderChatList();
+    renderChats();
 
 }
 
 
-function renderChatList(){
+/* ============================================================
+   CHATS
+============================================================ */
 
-    const list=document.getElementById("chatList");
+function getChats(){
 
-    if(!list||!activeUserData)return;
+    return activeUserData &&
+           activeUserData.chats
+           ? activeUserData.chats
+           : {};
+
+}
+
+
+function renderChats(){
+
+    const list =
+        document.getElementById("chatList");
+
+    if(!list || !activeUserData) return;
 
     list.innerHTML="";
 
-    const query=
-    document.getElementById("searchInput")
-    .value.toLowerCase().trim();
+    const search =
+        (document.getElementById("searchInput")
+        ?.value || "")
+        .toLowerCase()
+        .trim();
 
-    Object.values(getChats()).forEach(chat=>{
+    Object.values(getChats())
+    .filter(chat=>{
 
-        if(query &&
-        !chat.name.toLowerCase().includes(query))
-            return;
+        if(search &&
+        !chat.name.toLowerCase().includes(search)){
 
-        if(currentFolder==="friends"&&chat.type!=="friend")
-            return;
-
-        if(currentFolder==="groups"&&chat.type!=="group")
-            return;
-
-        if(currentFolder==="channels"&&chat.type!=="channel")
-            return;
-
-        if(currentFolder==="bots"&&chat.type!=="bots")
-            return;
-
-        let messages=[];
-
-        if(chat.type==="friend"){
-
-            const key=[
-                currentUser,
-                chat.targetUser
-            ].sort().join("_");
-
-            if(globalRooms[key])
-                messages=Object.values(globalRooms[key]);
-
-        }else if(chat.messages){
-
-            messages=Object.values(chat.messages);
+            return false;
 
         }
 
-        const last=messages.at(-1);
+        if(currentFolder!=="all" &&
+           chat.type!==currentFolder){
 
-        const preview=last
-        ? last.type==="image"
-            ? "📷 Rasm"
-            : last.type==="sticker"
-            ? last.text
-            : last.text
-        : "Xabarlar yo'q";
+            return false;
 
-        const item=document.createElement("div");
+        }
 
-        item.className=
-        "chat-item"+
-        (activeChatId===chat.id?" active":"");
+        return true;
 
-        item.innerHTML=`
+    })
+    .forEach(chat=>{
 
-            <div class="avatar3d">
+        const div =
+            document.createElement("div");
 
-                ${escapeHTML(
-                    chat.icon||
-                    chat.name[0].toUpperCase()
-                )}
+        div.className =
+            "chat-item "+
+            (activeChatId===chat.id
+            ?"active":"");
 
-                ${
-                    chat.type==="friend"
-                    ? '<span class="online-dot"></span>'
-                    :""
-                }
+        const avatar =
+            document.createElement("div");
 
-            </div>
+        avatar.className="avatar";
 
-            <div class="flex-1 min-w-0">
+        setAvatar(
+            avatar,
+            chat.icon ||
+            chat.name[0].toUpperCase()
+        );
 
-                <div class="flex justify-between">
+        const body =
+            document.createElement("div");
 
-                    <div class="font-extrabold text-xs truncate">
-                        ${escapeHTML(chat.name)}
-                    </div>
+        body.className=
+            "flex-1 min-w-0";
 
-                    ${
-                        last
-                        ? `<span class="text-[8px] text-[var(--muted)]">
-                            ${escapeHTML(last.time)}
-                           </span>`
-                        :""
-                    }
+        const title =
+            document.createElement("div");
 
-                </div>
+        title.className=
+            "font-extrabold text-xs truncate";
 
-                <div class="text-[10px] text-[var(--muted)]
-                truncate mt-1">
-                    ${escapeHTML(preview)}
-                </div>
+        title.textContent=chat.name;
 
-            </div>
+        const preview =
+            document.createElement("div");
 
-        `;
+        preview.className=
+            "text-[9px] text-slate-500 truncate mt-1";
 
-        item.onclick=()=>selectChat(chat.id);
+        preview.textContent=
+            getLastMessage(chat);
 
-        list.appendChild(item);
+        body.appendChild(title);
+        body.appendChild(preview);
+
+        div.appendChild(avatar);
+        div.appendChild(body);
+
+        div.onclick=()=>{
+            selectChat(chat.id);
+        };
+
+        list.appendChild(div);
 
     });
 
 }
 
 
-function selectChat(id){
-
-    activeChatId=id;
-
-    const chat=getChats()[id];
-
-    if(!chat)return;
-
-    document.getElementById("activeTitle").innerText=
-    chat.name;
-
-    document.getElementById("activeAvatar").innerText=
-    chat.icon||chat.name[0].toUpperCase();
-
-    document.getElementById("activeSubTitle").innerText=
-    chat.type==="friend"
-    ? "onlayn"
-    : chat.type==="bots"
-    ? "Bot"
-    : chat.type;
-
-    renderMessages();
-
-    renderChatList();
-
-    if(window.innerWidth<=768){
-
-        document.getElementById("sidebarPanel")
-        .classList.add("hidden");
-
-    }
-
-}
-
-
-/* =========================================
-   MESSAGES
-========================================= */
-
-function renderMessages(){
-
-    const box=document.getElementById("messageContainer");
-
-    box.innerHTML="";
-
-    const chat=getChats()[activeChatId];
-
-    if(!chat)return;
+function getLastMessage(chat){
 
     let messages=[];
 
     if(chat.type==="friend"){
 
-        const key=[
-            currentUser,
-            chat.targetUser
-        ].sort().join("_");
+        const room=
+            roomKey(
+                currentUser,
+                chat.targetUser
+            );
 
-        if(globalRooms[key])
-            messages=Object.values(globalRooms[key]);
+        messages=
+            globalChats[room]
+            ?Object.values(globalChats[room])
+            :[];
 
     }else{
 
-        messages=Object.values(chat.messages||{});
+        messages=
+            chat.messages
+            ?Object.values(chat.messages)
+            :[];
+
+    }
+
+    if(!messages.length){
+
+        return "Xabarlar yo'q";
+
+    }
+
+    const m=
+        messages[messages.length-1];
+
+    if(m.type==="image")
+        return "📷 Rasm";
+
+    if(m.type==="sticker")
+        return "Sticker "+m.text;
+
+    return m.text || "";
+
+}
+
+
+/* ============================================================
+   SELECT CHAT
+============================================================ */
+
+function selectChat(id){
+
+    const chat=getChats()[id];
+
+    if(!chat) return;
+
+    activeChatId=id;
+
+    document
+    .getElementById("chatPanel")
+    .classList.remove("hidden");
+
+    document
+    .getElementById("sidebar")
+    .classList.add("mobile-hide");
+
+    document
+    .getElementById("activeTitle")
+    .textContent=chat.name;
+
+    document
+    .getElementById("activeSubtitle")
+    .textContent=
+        chat.type==="friend"
+        ?"Onlayn do'st"
+        :chat.type==="bots"
+        ?"Bot"
+        :chat.type==="group"
+        ?"Guruh"
+        :"Kanal";
+
+    setAvatar(
+        document.getElementById("activeAvatar"),
+        chat.icon || chat.name[0].toUpperCase()
+    );
+
+    renderMessages();
+    renderChats();
+
+}
+
+
+function backToSidebar(){
+
+    document
+    .getElementById("sidebar")
+    .classList.remove("mobile-hide");
+
+    document
+    .getElementById("chatPanel")
+    .classList.add("hidden");
+
+}
+
+
+/* ============================================================
+   MESSAGE RENDER
+============================================================ */
+
+function getMessages(chat){
+
+    if(chat.type==="friend"){
+
+        const room=
+            roomKey(
+                currentUser,
+                chat.targetUser
+            );
+
+        return globalChats[room]
+        ?Object.values(globalChats[room])
+        :[];
+
+    }
+
+    return chat.messages
+    ?Object.values(chat.messages)
+    :[];
+
+}
+
+
+function renderMessages(){
+
+    const box =
+        document.getElementById(
+            "messageContainer"
+        );
+
+    box.innerHTML="";
+
+    if(!activeChatId){
+
+        showEmptyState();
+
+        return;
+
+    }
+
+    const chat=getChats()[activeChatId];
+
+    if(!chat){
+
+        showEmptyState();
+
+        return;
+
+    }
+
+    const messages=getMessages(chat);
+
+    if(!messages.length){
+
+        showEmptyState();
+
+        return;
 
     }
 
     messages.forEach(m=>{
 
-        const me=
-        m.sender===currentUser||
-        m.sender==="me";
+        const row=
+            document.createElement("div");
 
-        const row=document.createElement("div");
+        row.className="message-row";
 
-        row.className=
-        "message-row "+(me?"me":"");
+        const bubble=
+            document.createElement("div");
 
-        const bubble=document.createElement("div");
+        const me =
+            m.sender===currentUser ||
+            m.sender==="me";
 
         bubble.className=
-        "message-bubble "+(me?"me":"other");
-
-        let content="";
+            "bubble "+
+            (me?"me":"other");
 
         if(m.type==="image"){
 
-            content=`
-            <img src="${m.text}"
-            style="max-width:280px;max-height:300px;
-            border-radius:14px;display:block">
-            `;
+            const img=
+                document.createElement("img");
+
+            img.src=m.text;
+
+            img.className=
+                "max-w-full max-h-72 rounded-xl object-cover";
+
+            bubble.appendChild(img);
 
         }else if(m.type==="sticker"){
 
-            content=`
-            <div style="font-size:52px">
-                ${escapeHTML(m.text)}
-            </div>
-            `;
+            const sticker=
+                document.createElement("div");
+
+            sticker.textContent=m.text;
+
+            sticker.style.fontSize="48px";
+
+            sticker.style.textAlign="center";
+
+            bubble.appendChild(sticker);
 
         }else{
 
-            content=
-            `<div style="font-size:11px;line-height:1.55">
-                ${escapeHTML(m.text)}
-             </div>`;
+            const text=
+                document.createElement("div");
+
+            text.textContent=m.text || "";
+
+            text.className="text-xs leading-relaxed";
+
+            bubble.appendChild(text);
 
         }
-
-        let keyboard="";
 
         if(m.keyboard){
 
-            keyboard=`
-
-            <div class="bot-keyboard">
-
-                <button onclick="botButton('/newbot')">
-                    ➕ Create a new bot
-                </button>
-
-                <button onclick="botButton('/mybots')">
-                    🤖 My Bots
-                </button>
-
-                <button onclick="botButton('/setname')">
-                    ✏️ Edit Name
-                </button>
-
-                <button onclick="botButton('/setuserpic')">
-                    🖼️ Edit Picture
-                </button>
-
-                <button onclick="botButton('/setdescription')">
-                    📝 Description
-                </button>
-
-                <button onclick="botButton('/help')">
-                    ❓ Help
-                </button>
-
-            </div>
-
-            `;
+            bubble.appendChild(
+                createBotKeyboard()
+            );
 
         }
 
-        bubble.innerHTML=
-        content+
-        keyboard+
-        `<div class="message-time">
-            ${escapeHTML(m.time||"")}
-            ${me?" ✓✓":""}
-        </div>`;
+        if(m.time){
+
+            const time=
+                document.createElement("div");
+
+            time.className="msg-time";
+
+            time.textContent=m.time;
+
+            bubble.appendChild(time);
+
+        }
 
         row.appendChild(bubble);
 
@@ -2017,26 +2176,65 @@ function renderMessages(){
 }
 
 
-/* =========================================
+function showEmptyState(){
+
+    const box =
+        document.getElementById(
+            "messageContainer"
+        );
+
+    box.innerHTML=`
+
+        <div class="h-full flex flex-col items-center justify-center text-center">
+
+            <div class="empty-orb mb-6">
+                <i class="fa-solid fa-message"></i>
+            </div>
+
+            <h2 class="font-black text-lg">
+                Uzrel Messenger
+            </h2>
+
+            <p class="text-[10px] text-slate-500 mt-2">
+                Chatni tanlang va suhbatni boshlang.
+            </p>
+
+        </div>
+
+    `;
+
+}
+
+
+/* ============================================================
    SEND MESSAGE
-========================================= */
+============================================================ */
 
-function sendMsg(){
+function sendMessage(){
 
-    const input=document.getElementById("msgInput");
+    const input=
+        document.getElementById("msgInput");
 
     const text=input.value.trim();
 
-    if(!text||!activeChatId)return;
-
-    /*
-       YASHIRIN UZREO
-    */
+    if(!text || !activeChatId)
+        return;
 
     if(processUzreo(text)){
 
         input.value="";
+
         return;
+
+    }
+
+    if(
+        text.toLowerCase().includes("35") ||
+        text.toLowerCase().includes("bayram") ||
+        text.toLowerCase().includes("muborak")
+    ){
+
+        fireworks();
 
     }
 
@@ -2050,77 +2248,273 @@ function sendMsg(){
 }
 
 
-function sendSticker(emoji){
+/* ============================================================
+   DISPATCH
+============================================================ */
 
-    document.getElementById("stickerPicker")
-    .classList.remove("open");
+function dispatchMessage(data){
 
-    dispatchMessage({
-        type:"sticker",
-        content:emoji
+    const chat=
+        getChats()[activeChatId];
+
+    if(!chat){
+
+        showToast("Avval chat tanlang.");
+
+        return;
+
+    }
+
+    const message={
+
+        sender:currentUser,
+
+        type:data.type,
+
+        text:data.content,
+
+        time:now()
+
+    };
+
+    let ref;
+
+    if(chat.type==="friend"){
+
+        const room=
+            roomKey(
+                currentUser,
+                chat.targetUser
+            );
+
+        ref=
+            db.ref(
+                "globalChats/"+room
+            );
+
+    }else{
+
+        ref=
+            db.ref(
+                "users/"+currentUser+
+                "/chats/"+activeChatId+
+                "/messages"
+            );
+
+    }
+
+    ref.push(message)
+    .then(()=>{
+
+        renderMessages();
+
+        /* BotFather */
+        if(
+            chat.id==="bot_father" &&
+            data.type==="text"
+        ){
+
+            botFatherResponse(
+                data.content
+            );
+
+        }
+
+    })
+    .catch(error=>{
+
+        showToast(
+            "Xabar yuborilmadi: "+
+            error.message
+        );
+
+        console.error(error);
+
     });
 
 }
 
 
-function dispatchMessage(data){
+/* ============================================================
+   BOT
+============================================================ */
 
-    const chat=getChats()[activeChatId];
+function createBotKeyboard(){
 
-    if(!chat)return;
+    const wrap=
+        document.createElement("div");
 
-    const message={
+    wrap.className="bot-keyboard";
 
-        sender:currentUser,
-        type:data.type,
-        text:data.content,
-        time:new Date().toLocaleTimeString(
-            [],
-            {hour:"2-digit",minute:"2-digit"}
-        )
+    const buttons=[
+
+        ["➕ Yangi bot","newbot"],
+        ["🤖 Mening botlarim","mybots"],
+        ["✏️ Nomini o'zgartirish","name"],
+        ["🖼️ Rasm o'zgartirish","picture"],
+        ["📝 Tavsif","description"],
+        ["❓ Yordam","help"]
+
+    ];
+
+    buttons.forEach(([label,action])=>{
+
+        const b=
+            document.createElement("button");
+
+        b.className="bot-key";
+
+        b.textContent=label;
+
+        b.onclick=()=>botAction(action);
+
+        wrap.appendChild(b);
+
+    });
+
+    return wrap;
+
+}
+
+
+function botAction(action){
+
+    const responses={
+
+        newbot:
+            "🤖 Yangi bot yaratish boshlandi. Bot nomini keyingi xabarda yuboring.",
+
+        mybots:
+            "🤖 Hozircha sizda yaratilgan botlar ro'yxati bo'sh.",
+
+        name:
+            "✏️ Bot nomini o'zgartirish rejimi yoqildi.",
+
+        picture:
+            "🖼️ Bot rasmi uchun rasm yuboring.",
+
+        description:
+            "📝 Bot tavsifini yuboring.",
+
+        help:
+            "❓ Uzrel BotFather: yangi bot yaratish va bot sozlamalarini boshqarish mumkin."
 
     };
 
-    if(chat.type==="friend"){
+    dispatchBotReply(
+        responses[action] || "Uzrel BotFather."
+    );
 
-        const key=[
-            currentUser,
-            chat.targetUser
-        ].sort().join("_");
+}
 
-        db.ref("globalChats/"+key).push(message);
 
-    }else{
+function botFatherResponse(text){
 
-        db.ref(
-            `users/${currentUser}/chats/${activeChatId}/messages`
-        ).push(message);
+    const lower=text.toLowerCase();
+
+    if(lower==="/newbot"){
+
+        dispatchBotReply(
+            "🤖 Yangi bot yaratish uchun nomini yuboring."
+        );
+
+    }else if(lower.includes("help")){
+
+        dispatchBotReply(
+            "❓ BotFather yordam: tugmalardan foydalaning."
+        );
 
     }
 
 }
 
 
-/* =========================================
-   FILE
-========================================= */
+function dispatchBotReply(text){
 
-function handleFileUpload(event){
+    db.ref(
+        "users/"+currentUser+
+        "/chats/bot_father/messages"
+    ).push({
 
-    const file=event.target.files[0];
+        sender:"other",
+        type:"text",
+        text:text,
+        time:now()
 
-    if(!file||!activeChatId)return;
+    });
 
-    if(!file.type.startsWith("image/")){
+}
 
-        alert("Hozircha faqat rasm yuborish qo'llab-quvvatlanadi.");
+
+/* ============================================================
+   STICKERS
+============================================================ */
+
+function toggleStickers(){
+
+    document
+    .getElementById("stickerPanel")
+    .classList.toggle("open");
+
+}
+
+
+function sendSticker(emoji){
+
+    if(!activeChatId){
+
+        showToast("Avval chat tanlang.");
+
         return;
 
     }
 
-    if(file.size>2*1024*1024){
+    document
+    .getElementById("stickerPanel")
+    .classList.remove("open");
 
-        alert("Rasm 2 MB dan kichik bo'lsin.");
+    dispatchMessage({
+
+        type:"sticker",
+        content:emoji
+
+    });
+
+    if(["🎉","🎆","🇺🇿"].includes(emoji)){
+
+        fireworks();
+
+    }
+
+}
+
+
+/* ============================================================
+   IMAGE
+============================================================ */
+
+function handleImage(event){
+
+    const file=
+        event.target.files[0];
+
+    event.target.value="";
+
+    if(!file || !activeChatId)
+        return;
+
+    if(!file.type.startsWith("image/")){
+
+        showToast("Faqat rasm yuborish mumkin.");
+
+        return;
+
+    }
+
+    if(file.size>8*1024*1024){
+
+        showToast("Rasm 8 MB dan kichik bo'lsin.");
+
         return;
 
     }
@@ -2129,292 +2523,595 @@ function handleFileUpload(event){
 
     reader.onload=e=>{
 
-        dispatchMessage({
+        compressImage(
+            e.target.result,
+            1400,
+            0.82,
+            dataUrl=>{
 
-            type:"image",
-            content:e.target.result
+                dispatchMessage({
 
-        });
+                    type:"image",
+                    content:dataUrl
+
+                });
+
+            }
+        );
 
     };
 
     reader.readAsDataURL(file);
 
-    event.target.value="";
+}
+
+
+function compressImage(src,maxWidth,quality,done){
+
+    const img=new Image();
+
+    img.onload=()=>{
+
+        const scale=
+            Math.min(
+                1,
+                maxWidth/img.width
+            );
+
+        const canvas=
+            document.createElement("canvas");
+
+        canvas.width=
+            img.width*scale;
+
+        canvas.height=
+            img.height*scale;
+
+        const ctx=
+            canvas.getContext("2d");
+
+        ctx.drawImage(
+            img,
+            0,
+            0,
+            canvas.width,
+            canvas.height
+        );
+
+        done(
+            canvas.toDataURL(
+                "image/jpeg",
+                quality
+            )
+        );
+
+    };
+
+    img.src=src;
 
 }
 
 
-/* =========================================
-   STICKER
-========================================= */
+/* ============================================================
+   STORIES
+============================================================ */
 
-function toggleStickerPicker(){
+function renderStories(){
 
-    document.getElementById("stickerPicker")
-    .classList.toggle("open");
+    const box=
+        document.getElementById(
+            "storyList"
+        );
 
-}
-
-
-/* =========================================
-   ADD FRIEND
-========================================= */
-
-function openAddFriendModal(){
-
-    openModal("addFriendModal");
-
-}
-
-
-function confirmAddFriend(){
-
-    const target=
-    document.getElementById(
-        "friendUsernameInput"
-    ).value.trim().toLowerCase();
-
-    const first=
-    document.getElementById(
-        "friendFirstMsgInput"
-    ).value.trim()||"Salom!";
-
-    if(!target||target===currentUser)return;
-
-    if(!allCloudUsers[target]){
-
-        alert("Foydalanuvchi topilmadi!");
+    if(!box || !activeUserData)
         return;
+
+    box.innerHTML="";
+
+
+    /* MY STORY */
+
+    const myStories=
+        activeUserData.stories
+        ?Object.values(activeUserData.stories)
+        :[];
+
+    if(myStories.length){
+
+        addStoryCard(
+            box,
+            activeUserData,
+            myStories[myStories.length-1],
+            "Siz"
+        );
 
     }
 
-    const id="friend_"+target;
 
-    db.ref(
-        `users/${currentUser}/chats/${id}`
-    ).set({
+    /* FRIEND STORIES */
 
-        id,
-        name:target,
-        type:"friend",
-        targetUser:target,
-        icon:
-        allCloudUsers[target].avatar||
-        target[0].toUpperCase()
+    Object.entries(allUsers).forEach(
+        ([username,user])=>{
 
-    });
+            if(username===currentUser)
+                return;
 
-    db.ref(
-        `users/${target}/chats/friend_${currentUser}`
-    ).set({
+            const stories=
+                user.stories
+                ?Object.values(user.stories)
+                :[];
 
-        id:"friend_"+currentUser,
-        name:currentUser,
-        type:"friend",
-        targetUser:currentUser,
-        icon:
-        activeUserData.avatar||
-        currentUser[0].toUpperCase()
+            if(!stories.length)
+                return;
 
-    });
-
-    const room=[
-        currentUser,
-        target
-    ].sort().join("_");
-
-    db.ref("globalChats/"+room).push({
-
-        sender:currentUser,
-        type:"text",
-        text:first,
-        time:new Date().toLocaleTimeString(
-            [],
-            {hour:"2-digit",minute:"2-digit"}
-        )
-
-    });
-
-    closeModal("addFriendModal");
-
-}
-
-
-/* =========================================
-   GROUP / CHANNEL
-========================================= */
-
-function openCreateModal(type){
-
-    createModalType=type;
-
-    document.getElementById(
-        "createModalTitle"
-    ).innerText=
-    type==="group"
-    ?"Yangi guruh"
-    :"Yangi kanal";
-
-    openModal("createModal");
-
-}
-
-
-function confirmCreate(){
-
-    const name=
-    document.getElementById(
-        "createNameInput"
-    ).value.trim();
-
-    const icon=
-    document.getElementById(
-        "createIconInput"
-    ).value.trim()||
-    (createModalType==="group"?"👥":"📢");
-
-    if(!name)return;
-
-    const id=
-    createModalType+"_"+Date.now();
-
-    db.ref(
-        `users/${currentUser}/chats/${id}`
-    ).set({
-
-        id,
-        name,
-        type:createModalType,
-        icon,
-        owner:currentUser,
-        messages:{
-
-            welcome:{
-                sender:"other",
-                text:
-                createModalType==="group"
-                ?"Guruh yaratildi! 👥"
-                :"Kanal yaratildi! 📢",
-                type:"text",
-                time:new Date().toLocaleTimeString(
-                    [],
-                    {hour:"2-digit",minute:"2-digit"}
-                )
-            }
+            addStoryCard(
+                box,
+                user,
+                stories[stories.length-1],
+                user.displayName || username
+            );
 
         }
+    );
+
+
+    /* GROUP STORIES */
+
+    Object.values(getChats())
+    .filter(c=>c.type==="group" && c.story)
+    .forEach(group=>{
+
+        addStoryCard(
+            box,
+            group,
+            group.story,
+            group.name
+        );
 
     });
 
-    closeModal("createModal");
+}
+
+
+function addStoryCard(box,owner,story,name){
+
+    const card=
+        document.createElement("div");
+
+    card.className="story-card";
+
+    const ring=
+        document.createElement("div");
+
+    ring.className="story-ring";
+
+    const inner=
+        document.createElement("div");
+
+    inner.className="story-inner";
+
+    if(story.image){
+
+        const img=
+            document.createElement("img");
+
+        img.src=story.image;
+
+        inner.appendChild(img);
+
+    }else{
+
+        inner.textContent=
+            owner.avatar || "📖";
+
+    }
+
+    ring.appendChild(inner);
+
+    const title=
+        document.createElement("div");
+
+    title.className="story-name";
+
+    title.textContent=name;
+
+    card.appendChild(ring);
+    card.appendChild(title);
+
+    card.onclick=()=>{
+
+        viewStory(
+            story,
+            name
+        );
+
+    };
+
+    box.appendChild(card);
 
 }
 
 
-/* =========================================
-   BOT
-========================================= */
+/* ============================================================
+   STORY MODAL
+============================================================ */
 
-function botButton(command){
+function openStoryModal(target){
 
-    if(!activeChatId)return;
+    storyTarget=target;
 
-    if(command==="/newbot"){
+    document.getElementById(
+        "storyTargetText"
+    ).textContent=
+        target==="group"
+        ?"Guruh profiliga hikoya"
+        :"Profil hikoyasi";
 
-        createBot();
-
-        return;
-
-    }
-
-    if(command==="/mybots"){
-
-        botReply(
-            "🤖 Sizning botlaringizni shu yerda boshqarishingiz mumkin."
-        );
-
-        return;
-
-    }
-
-    if(command==="/setname"){
-
-        botReply(
-            "✏️ Bot nomini o'zgartirish uchun /setname buyrug'idan foydalaning."
-        );
-
-        return;
-
-    }
-
-    if(command==="/setuserpic"){
-
-        botReply(
-            "🖼️ Bot rasmi uchun /setuserpic buyrug'idan foydalaning."
-        );
-
-        return;
-
-    }
-
-    if(command==="/setdescription"){
-
-        botReply(
-            "📝 Bot description'ini sozlash mumkin."
-        );
-
-        return;
-
-    }
-
-    if(command==="/help"){
-
-        botReply(
-            "❓ BotFather yordam menyusi."
-        );
-
-    }
+    document
+    .getElementById("storyModal")
+    .classList.add("open");
 
 }
 
 
-function createBot(){
+function publishStory(){
 
-    const name=prompt(
-        "Bot nomini kiriting:"
-    );
+    const file=
+        document.getElementById(
+            "storyImage"
+        ).files[0];
 
-    if(!name)return;
+    const caption=
+        document.getElementById(
+            "storyCaption"
+        ).value.trim();
 
-    const username=prompt(
-        "Bot username'ini kiriting:"
-    );
+    if(!file){
 
-    if(!username)return;
+        showToast(
+            "Hikoya uchun rasm tanlang."
+        );
 
-    const id="bot_"+Date.now();
+        return;
 
-    const bot={
+    }
 
-        id,
-        name,
-        username,
-        type:"bots",
-        icon:"🤖",
-        bot:true,
+    const reader=
+        new FileReader();
+
+    reader.onload=e=>{
+
+        compressImage(
+            e.target.result,
+            1200,
+            .82,
+            image=>{
+
+                const story={
+
+                    image:image,
+
+                    caption:caption,
+
+                    time:Date.now()
+
+                };
+
+
+                if(
+                    storyTarget==="group" &&
+                    activeChatId
+                ){
+
+                    db.ref(
+                        "users/"+currentUser+
+                        "/chats/"+activeChatId+
+                        "/story"
+                    ).set(story)
+                    .then(()=>{
+
+                        closeModal("storyModal");
+
+                        showToast(
+                            "Guruh hikoyasi joylandi."
+                        );
+
+                    });
+
+                }else{
+
+                    db.ref(
+                        "users/"+currentUser+
+                        "/stories"
+                    ).push(story)
+                    .then(()=>{
+
+                        closeModal("storyModal");
+
+                        showToast(
+                            "Hikoya joylandi."
+                        );
+
+                    });
+
+                }
+
+            }
+        );
+
+    };
+
+    reader.readAsDataURL(file);
+
+}
+
+
+function viewStory(story,name){
+
+    document.getElementById(
+        "storyViewerImage"
+    ).src=story.image || "";
+
+    document.getElementById(
+        "storyViewerTitle"
+    ).textContent=name;
+
+    document.getElementById(
+        "storyViewerCaption"
+    ).textContent=
+        story.caption || "";
+
+    document
+    .getElementById("storyViewer")
+    .classList.add("open");
+
+}
+
+
+/* ============================================================
+   FRIENDS
+============================================================ */
+
+function openAddFriend(){
+
+    document
+    .getElementById("friendModal")
+    .classList.add("open");
+
+}
+
+
+function addFriend(){
+
+    const username=
+        document.getElementById(
+            "friendInput"
+        )
+        .value
+        .trim()
+        .toLowerCase();
+
+    const first=
+        document.getElementById(
+            "firstMessageInput"
+        )
+        .value
+        .trim() || "Salom!";
+
+    if(!username){
+
+        showToast(
+            "Username kiriting."
+        );
+
+        return;
+
+    }
+
+    if(username===currentUser){
+
+        showToast(
+            "O'zingizni do'st qilib bo'lmaydi."
+        );
+
+        return;
+
+    }
+
+    const target=allUsers[username];
+
+    if(!target){
+
+        showToast(
+            "Foydalanuvchi topilmadi."
+        );
+
+        return;
+
+    }
+
+    const myChatId=
+        "friend_"+username;
+
+    const theirChatId=
+        "friend_"+currentUser;
+
+    const myChat={
+
+        id:myChatId,
+
+        name:
+            target.displayName ||
+            username,
+
+        type:"friend",
+
+        targetUser:username,
+
+        icon:
+            target.avatar ||
+            username[0].toUpperCase()
+
+    };
+
+    const theirChat={
+
+        id:theirChatId,
+
+        name:
+            activeUserData.displayName ||
+            currentUser,
+
+        type:"friend",
+
+        targetUser:currentUser,
+
+        icon:
+            activeUserData.avatar ||
+            currentUser[0].toUpperCase()
+
+    };
+
+    const updates={};
+
+    updates[
+        "users/"+currentUser+
+        "/chats/"+myChatId
+    ]=myChat;
+
+    updates[
+        "users/"+username+
+        "/chats/"+theirChatId
+    ]=theirChat;
+
+    const room=
+        roomKey(
+            currentUser,
+            username
+        );
+
+    const msgKey=
+        db.ref(
+            "globalChats/"+room
+        ).push().key;
+
+    updates[
+        "globalChats/"+room+
+        "/"+msgKey
+    ]={
+
+        sender:currentUser,
+
+        type:"text",
+
+        text:first,
+
+        time:now()
+
+    };
+
+    db.ref()
+    .update(updates)
+    .then(()=>{
+
+        closeModal("friendModal");
+
+        selectChat(myChatId);
+
+        showToast(
+            "Do'st qo'shildi."
+        );
+
+    })
+    .catch(error=>{
+
+        showToast(
+            "Xato: "+error.message
+        );
+
+    });
+
+}
+
+
+/* ============================================================
+   CREATE GROUP / CHANNEL
+============================================================ */
+
+let createType="group";
+
+
+function openCreate(type){
+
+    createType=type;
+
+    document.getElementById(
+        "createTitle"
+    ).textContent=
+        type==="group"
+        ?"Yangi guruh"
+        :"Yangi kanal";
+
+    document
+    .getElementById("createModal")
+    .classList.add("open");
+
+}
+
+
+function createChat(){
+
+    const name=
+        document.getElementById(
+            "createName"
+        ).value.trim();
+
+    const icon=
+        document.getElementById(
+            "createIcon"
+        ).value.trim() ||
+        (createType==="group"?"👥":"📢");
+
+    if(!name){
+
+        showToast(
+            "Nomi kiriting."
+        );
+
+        return;
+
+    }
+
+    const id=
+        createType+"_"+Date.now();
+
+    const chat={
+
+        id:id,
+
+        name:name,
+
+        type:createType,
+
+        icon:icon,
+
+        createdBy:currentUser,
 
         messages:{
 
             welcome:{
+
                 sender:"other",
+
                 type:"text",
+
                 text:
-                `🤖 ${name} yaratildi!\n\nUsername: @${username}`,
-                time:new Date().toLocaleTimeString(
-                    [],
-                    {hour:"2-digit",minute:"2-digit"}
-                )
+                    (createType==="group"
+                    ?"👥 Guruh yaratildi."
+                    :"📢 Kanal yaratildi."),
+
+                time:now()
+
             }
 
         }
@@ -2422,216 +3119,317 @@ function createBot(){
     };
 
     db.ref(
-        `users/${currentUser}/chats/${id}`
-    ).set(bot);
+        "users/"+currentUser+
+        "/chats/"+id
+    ).set(chat)
+    .then(()=>{
 
-    setTimeout(()=>selectChat(id),300);
+        closeModal("createModal");
 
-}
+        selectChat(id);
 
+        showToast(
+            createType==="group"
+            ?"Guruh yaratildi."
+            :"Kanal yaratildi."
+        );
 
-function botReply(text){
+    })
+    .catch(error=>{
 
-    const chat=getChats()[activeChatId];
-
-    if(!chat)return;
-
-    db.ref(
-        `users/${currentUser}/chats/${activeChatId}/messages`
-    ).push({
-
-        sender:"other",
-        type:"text",
-        text,
-        time:new Date().toLocaleTimeString(
-            [],
-            {hour:"2-digit",minute:"2-digit"}
-        )
+        showToast(
+            "Xato: "+error.message
+        );
 
     });
 
 }
 
 
-/* =========================================
-   GROUP PROFILE / SETTINGS
-========================================= */
+/* ============================================================
+   CHAT INFO
+============================================================ */
 
-function openChatInfoModal(){
+function openChatInfo(){
 
-    const chat=getChats()[activeChatId];
+    if(!activeChatId)
+        return;
 
-    if(!chat)return;
+    const chat=
+        getChats()[activeChatId];
 
-    document.getElementById(
-        "chatInfoTitle"
-    ).innerText=chat.name;
+    if(!chat)
+        return;
 
     const content=
-    document.getElementById(
-        "chatInfoContent"
+        document.getElementById(
+            "chatInfoContent"
+        );
+
+    content.innerHTML="";
+
+    const top=
+        document.createElement("div");
+
+    top.className="text-center mb-5";
+
+    const avatar=
+        document.createElement("div");
+
+    avatar.className="avatar mx-auto mb-3";
+
+    setAvatar(
+        avatar,
+        chat.icon ||
+        chat.name[0].toUpperCase()
     );
 
-    content.innerHTML=`
+    top.appendChild(avatar);
 
-        <div class="text-center">
+    const title=
+        document.createElement("div");
 
-            <div class="avatar3d mx-auto mb-3"
-            style="width:75px;height:75px;font-size:25px">
-                ${escapeHTML(chat.icon||"👥")}
-            </div>
+    title.className="font-black text-sm";
 
-            <div class="font-extrabold text-sm">
-                ${escapeHTML(chat.name)}
-            </div>
+    title.textContent=chat.name;
 
-            <div class="text-[10px]
-            text-[var(--muted)] mt-1">
-                ${escapeHTML(chat.type)}
-            </div>
+    top.appendChild(title);
 
-        </div>
+    const type=
+        document.createElement("div");
 
-        ${
-            chat.type==="group"
-            ? `
+    type.className="text-[9px] text-slate-500 mt-1";
 
-            <div class="mt-5 space-y-2">
+    type.textContent=
+        "Turi: "+chat.type;
 
-                <button onclick="editGroup()"
-                class="glass-btn w-full p-3 rounded-2xl text-left text-xs">
-                    ✏️ Guruhni tahrirlash
-                </button>
+    top.appendChild(type);
 
-                <button onclick="openStoryModal()"
-                class="glass-btn w-full p-3 rounded-2xl text-left text-xs">
-                    📸 Guruh profiliga hikoya qo'shish
-                </button>
+    content.appendChild(top);
 
-                <button onclick="botReply('🔕 Guruh ovozsiz qilindi.')"
-                class="glass-btn w-full p-3 rounded-2xl text-left text-xs">
-                    🔕 Mute
-                </button>
 
-            </div>
+    if(chat.type==="group"){
 
-            `
-            :""
-        }
+        const storyBtn=
+            document.createElement("button");
 
-        ${
-            chat.type==="bots"
-            ? `
+        storyBtn.className=
+            "gradient-btn w-full py-3 rounded-2xl text-xs font-bold mb-2";
 
-            <div class="mt-5 space-y-2">
+        storyBtn.textContent=
+            "📖 Guruh profiliga hikoya rasm qo'shish";
 
-                <button onclick="createBot()"
-                class="glass-btn w-full p-3 rounded-2xl text-left text-xs">
-                    🤖 Yangi bot
-                </button>
+        storyBtn.onclick=()=>{
 
-                <button onclick="botReply('⚙️ Bot sozlamalari ochildi.')"
-                class="glass-btn w-full p-3 rounded-2xl text-left text-xs">
-                    ⚙️ Bot sozlamalari
-                </button>
+            closeModal("chatInfoModal");
 
-            </div>
+            openStoryModal("group");
 
-            `
-            :""
-        }
+        };
 
-    `;
+        content.appendChild(storyBtn);
 
-    openModal("chatInfoModal");
+    }
+
+
+    if(chat.type==="bots"){
+
+        const botText=
+            document.createElement("div");
+
+        botText.className=
+            "p-3 rounded-2xl bg-cyan-500/5 border border-cyan-500/10 text-[10px] text-slate-400";
+
+        botText.textContent=
+            "BotFather inline tugmalari chat ichida ishlaydi.";
+
+        content.appendChild(botText);
+
+    }
+
+    document
+    .getElementById("chatInfoModal")
+    .classList.add("open");
 
 }
 
 
-function editGroup(){
+/* ============================================================
+   SETTINGS
+============================================================ */
 
-    const chat=getChats()[activeChatId];
+function openSettings(){
 
-    if(!chat)return;
+    if(!activeUserData)
+        return;
 
-    const name=prompt(
-        "Yangi guruh nomi:",
-        chat.name
-    );
+    document.getElementById(
+        "avatarInput"
+    ).value=
+        activeUserData.avatar || "";
 
-    if(!name)return;
+    document.getElementById(
+        "displayNameInput"
+    ).value=
+        activeUserData.displayName || "";
 
-    const icon=prompt(
-        "Yangi emoji:",
-        chat.icon||"👥"
-    );
+    document.getElementById(
+        "bioInput"
+    ).value=
+        activeUserData.bio || "";
+
+    document
+    .getElementById("settingsModal")
+    .classList.add("open");
+
+}
+
+
+function saveSettings(){
+
+    const avatar=
+        document.getElementById(
+            "avatarInput"
+        ).value.trim();
+
+    const name=
+        document.getElementById(
+            "displayNameInput"
+        ).value.trim();
+
+    const bio=
+        document.getElementById(
+            "bioInput"
+        ).value.trim();
+
+    const updates={};
+
+    if(avatar)
+        updates.avatar=avatar;
+
+    if(name)
+        updates.displayName=name;
+
+    updates.bio=bio;
 
     db.ref(
-        `users/${currentUser}/chats/${activeChatId}`
-    ).update({
+        "users/"+currentUser
+    )
+    .update(updates)
+    .then(()=>{
 
-        name,
-        icon:icon||chat.icon
+        closeModal("settingsModal");
+
+        showToast(
+            "Profil saqlandi."
+        );
+
+    })
+    .catch(error=>{
+
+        showToast(
+            "Xato: "+error.message
+        );
 
     });
 
 }
 
 
-/* =========================================
-   HIDDEN UZREO
-========================================= */
+/* ============================================================
+   PEOPLE MENU
+============================================================ */
+
+function togglePeopleMenu(){
+
+    document
+    .getElementById("peopleMenu")
+    .classList.toggle("hidden");
+
+}
+
+
+function hidePeopleMenu(){
+
+    document
+    .getElementById("peopleMenu")
+    .classList.add("hidden");
+
+}
+
+
+/* ============================================================
+   MODALS
+============================================================ */
+
+function closeModal(id){
+
+    document
+    .getElementById(id)
+    .classList.remove("open");
+
+}
+
+
+/* ============================================================
+   UZREO — INVISIBLE
+============================================================ */
 
 function processUzreo(text){
 
-    const lower=text.toLowerCase().trim();
+    const lower=
+        text.toLowerCase().trim();
 
     if(!lower.startsWith("/uzreo"))
         return false;
 
-    const command=lower
-    .replace("/uzreo","")
-    .trim();
+    const command=
+        lower
+        .replace("/uzreo","")
+        .trim();
 
-    if(command==="help"){
+    if(command==="help" || !command){
 
-        botReply(
-            "Uzreo yashirin yordamchi.\n\n"+
-            "/uzreo dark — Dark rejim\n"+
-            "/uzreo amoled — AMOLED\n"+
-            "/uzreo fireworks — effekt\n"+
-            "/uzreo stickers — stikerlar\n"+
-            "/uzreo settings — sozlamalar"
+        sendInvisibleUzreo(
+            "Uzreo: /uzreo dark, /uzreo amoled, /uzreo fireworks, /uzreo stickers, /uzreo settings"
         );
 
     }else if(command==="dark"){
 
-        setTheme("dark");
-        botReply("🌙 Dark rejim yoqildi.");
+        document.body.style.backgroundColor="#020407";
+
+        sendInvisibleUzreo(
+            "Uzreo: dark mode kuchaytirildi."
+        );
 
     }else if(command==="amoled"){
 
-        setTheme("amoled");
-        botReply("🖤 AMOLED rejim yoqildi.");
+        document.body.style.background="#000";
+
+        sendInvisibleUzreo(
+            "Uzreo: AMOLED qora rejim yoqildi."
+        );
 
     }else if(command==="fireworks"){
 
-        triggerFireworks();
-        botReply("✨ Tayyor!");
+        fireworks();
+
+        sendInvisibleUzreo(
+            "Uzreo: effekt ishga tushdi."
+        );
 
     }else if(command==="stickers"){
 
-        document.getElementById("stickerPicker")
-        .classList.add("open");
+        toggleStickers();
 
     }else if(command==="settings"){
 
-        openSettingsModal();
+        openSettings();
 
     }else{
 
-        botReply(
-            "Uzreo: buyruqni tushunmadim. /uzreo help"
+        sendInvisibleUzreo(
+            "Uzreo: bu buyruq hozircha mavjud emas."
         );
 
     }
@@ -2641,67 +3439,199 @@ function processUzreo(text){
 }
 
 
-/* =========================================
-   THEME
-========================================= */
+function sendInvisibleUzreo(text){
 
-function setTheme(theme){
+    if(!activeChatId)
+        return;
 
-    if(theme==="amoled"){
+    const chat=
+        getChats()[activeChatId];
 
-        document.documentElement.style
-        .setProperty("--bg","#000");
+    if(!chat)
+        return;
+
+    const message={
+
+        sender:"other",
+
+        type:"text",
+
+        text:text,
+
+        time:now()
+
+    };
+
+    if(chat.type==="friend"){
+
+        const room=
+            roomKey(
+                currentUser,
+                chat.targetUser
+            );
+
+        db.ref(
+            "globalChats/"+room
+        ).push(message);
 
     }else{
 
-        document.documentElement.style
-        .setProperty("--bg","#05070c");
+        db.ref(
+            "users/"+currentUser+
+            "/chats/"+activeChatId+
+            "/messages"
+        ).push(message);
 
     }
 
-    localStorage.setItem(
-        "uzrel_theme",
-        theme
+}
+
+
+/* ============================================================
+   FIREWORKS
+============================================================ */
+
+function fireworks(){
+
+    const canvas=
+        document.getElementById(
+            "confettiCanvas"
+        );
+
+    const fire=
+        confetti.create(
+            canvas,
+            {
+                resize:true,
+                useWorker:true
+            }
+        );
+
+    const colors=[
+        "#22d3ee",
+        "#3b82f6",
+        "#8b5cf6",
+        "#ec4899",
+        "#f59e0b",
+        "#22c55e",
+        "#ffffff"
+    ];
+
+    fire({
+
+        particleCount:100,
+
+        spread:110,
+
+        startVelocity:45,
+
+        origin:{
+            y:.65
+        },
+
+        colors:colors
+
+    });
+
+    setTimeout(()=>{
+
+        fire({
+
+            particleCount:70,
+
+            angle:60,
+
+            spread:70,
+
+            origin:{
+                x:0,
+                y:.6
+            },
+
+            colors:colors
+
+        });
+
+        fire({
+
+            particleCount:70,
+
+            angle:120,
+
+            spread:70,
+
+            origin:{
+                x:1,
+                y:.6
+            },
+
+            colors:colors
+
+        });
+
+    },350);
+
+}
+
+
+/* ============================================================
+   UTILS
+============================================================ */
+
+function roomKey(a,b){
+
+    return [a,b]
+    .sort()
+    .join("_");
+
+}
+
+
+function now(){
+
+    return new Date()
+    .toLocaleTimeString(
+        [],
+        {
+            hour:"2-digit",
+            minute:"2-digit"
+        }
     );
 
 }
 
 
-/* =========================================
-   MODALS
-========================================= */
+function showToast(text){
 
-function openModal(id){
+    const toast=
+        document.createElement("div");
 
-    document.getElementById(id)
-    .classList.add("open");
+    toast.className=
+        "fixed bottom-6 left-1/2 -translate-x-1/2 z-[10000]"+
+        " glass px-4 py-3 rounded-2xl"+
+        " text-[10px] font-bold text-white";
+
+    toast.textContent=text;
+
+    document.body.appendChild(toast);
+
+    setTimeout(()=>{
+
+        toast.style.opacity="0";
+        toast.style.transform=
+            "translate(-50%,10px)";
+
+        toast.style.transition=".3s";
+
+        setTimeout(
+            ()=>toast.remove(),
+            300
+        );
+
+    },2600);
 
 }
 
-
-function closeModal(id){
-
-    document.getElementById(id)
-    .classList.remove("open");
-
-}
-
-
-/* =========================================
-   MOBILE
-========================================= */
-
-function backToSidebar(){
-
-    document.getElementById("sidebarPanel")
-    .classList.remove("hidden");
-
-}
-
-
-/* =========================================
-   LOGOUT
-========================================= */
 
 function logout(){
 
@@ -2714,84 +3644,131 @@ function logout(){
 }
 
 
-/* =========================================
-   FIREWORKS
-========================================= */
+/* ============================================================
+   AUTO "MUA"
+============================================================ */
 
-function triggerFireworks(){
+/*
+   Saytga kirilganda "Mua" xabari
+   birinchi marta Saved Messages ichiga yoziladi.
+*/
 
-    if(typeof confetti==="undefined")
+function sendWelcomeMua(){
+
+    if(!currentUser)
         return;
 
-    const canvas=
-    document.getElementById(
-        "confettiCanvas"
-    );
+    const saved=
+        activeUserData &&
+        activeUserData.chats &&
+        activeUserData.chats.saved_messages;
 
-    const fire=
-    confetti.create(
-        canvas,
-        {
-            resize:true,
-            useWorker:true
-        }
-    );
+    if(!saved)
+        return;
 
-    fire({
+    const already=
+        saved.messages &&
+        Object.values(saved.messages)
+        .some(m=>
+            m.text==="Mua"
+        );
 
-        particleCount:100,
-        spread:110,
-        origin:{y:.6}
+    if(already)
+        return;
+
+    db.ref(
+        "users/"+currentUser+
+        "/chats/saved_messages/messages"
+    ).push({
+
+        sender:"other",
+
+        type:"text",
+
+        text:"Mua",
+
+        time:now()
 
     });
 
 }
 
 
-/* =========================================
-   OUTSIDE CLICK
-========================================= */
+/* ============================================================
+   AFTER LOGIN
+============================================================ */
 
-document.addEventListener("click",e=>{
+const oldStartFirebase=startFirebase;
 
-    const picker=
-    document.getElementById(
-        "stickerPicker"
-    );
+startFirebase=function(){
 
-    if(
-        picker.classList.contains("open") &&
-        !picker.contains(e.target) &&
-        !e.target.closest(
-            '[onclick="toggleStickerPicker()"]'
-        )
-    ){
+    oldStartFirebase();
 
-        picker.classList.remove("open");
+    setTimeout(()=>{
+
+        sendWelcomeMua();
+
+        fireworks();
+
+    },900);
+
+};
+
+
+/* ============================================================
+   CLOSE STICKER ON OUTSIDE CLICK
+============================================================ */
+
+document.addEventListener(
+    "click",
+    e=>{
+
+        const panel=
+            document.getElementById(
+                "stickerPanel"
+            );
+
+        const button=
+            e.target.closest(
+                '[title="Stiker"]'
+            );
+
+        if(
+            panel &&
+            !panel.contains(e.target) &&
+            !button
+        ){
+
+            panel.classList.remove("open");
+
+        }
 
     }
+);
 
-});
 
+/* ============================================================
+   ESC CLOSE
+============================================================ */
 
-document.addEventListener("keydown",e=>{
+document.addEventListener(
+    "keydown",
+    e=>{
 
-    if(e.key==="Escape"){
+        if(e.key==="Escape"){
 
-        document.querySelectorAll(".modal.open")
-        .forEach(m=>m.classList.remove("open"));
+            document
+            .querySelectorAll(".modal.open")
+            .forEach(m=>
+                m.classList.remove("open")
+            );
 
-        document.getElementById(
-            "stickerPicker"
-        ).classList.remove("open");
+            hidePeopleMenu();
 
-        document.getElementById(
-            "storyViewer"
-        ).classList.remove("open");
+        }
 
     }
-
-});
+);
 
 </script>
 
